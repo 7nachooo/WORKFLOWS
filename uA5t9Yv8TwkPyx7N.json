@@ -1,0 +1,482 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-14T10:29:59.000Z",
+    "createdAt": "2026-03-14T10:21:19.888Z",
+    "versionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e",
+    "workflowId": "uA5t9Yv8TwkPyx7N",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "telefono"
+              },
+              {
+                "name": "correo"
+              }
+            ]
+          }
+        },
+        "id": "018815b8-b3c2-4511-bbea-334b4d981a7a",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          272,
+          256
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "delete",
+          "calendar": {
+            "__rl": true,
+            "value": "tornasolcontacto3@gmail.com",
+            "mode": "list",
+            "cachedResultName": "tornasolcontacto3@gmail.com"
+          },
+          "eventId": "={{ $json.id }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1.2,
+        "position": [
+          928,
+          256
+        ],
+        "id": "908e1bc2-4a97-4c90-9a43-c42eb3d76bec",
+        "name": "Google Calendar",
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "ZwNI01XrsFRnMJdg",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Hoja 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WJIikAcgg-zW8OkQHBDhvW6pG0okIc6G3A5cF5G9IdM/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "telefono",
+                "lookupValue": "={{ $json.Telefono }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          704,
+          256
+        ],
+        "id": "51614b17-28e7-4c5a-84ca-95c10278b49e",
+        "name": "Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "px0flVbICKq2At2u",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a0852691-9c8d-4f24-a4b4-b205129770f8",
+                "name": "response",
+                "value": "turno cancelado",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1584,
+          256
+        ],
+        "id": "59a05f3d-85ad-4562-b7b1-c07be105c865",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "jsCode": "const telefono = ($input.first().json.Telefono || $input.first().json.telefono || '')\n  .toString()\n  .replace(/\\s+/g, '')\n  .replace(/^\\+34/, '');\n\nreturn [{ json: { Telefono: telefono } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          256
+        ],
+        "id": "3cf1d014-1dd6-4adc-8da2-684ef1b74950",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "operation": "delete",
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "startIndex": "={{ $('Google Sheets').item.json.row_number }}"
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1136,
+          256
+        ],
+        "id": "13ebabbf-e78f-4db3-9b75-36c670792a49",
+        "name": "Delete rows or columns from sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "px0flVbICKq2At2u",
+            "name": "TORNASOL"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Calendar": {
+        "main": [
+          [
+            {
+              "node": "Delete rows or columns from sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Google Calendar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Delete rows or columns from sheet": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version 03fadd2e",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e",
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Delete rows or columns from sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete rows or columns from sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-13T15:42:11.119Z",
+  "id": "uA5t9Yv8TwkPyx7N",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "TOOL CANCELAR TORNASOL",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "telefono"
+            },
+            {
+              "name": "correo"
+            }
+          ]
+        }
+      },
+      "id": "018815b8-b3c2-4511-bbea-334b4d981a7a",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "tornasolcontacto3@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tornasolcontacto3@gmail.com"
+        },
+        "eventId": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.2,
+      "position": [
+        928,
+        256
+      ],
+      "id": "908e1bc2-4a97-4c90-9a43-c42eb3d76bec",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ZwNI01XrsFRnMJdg",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1WJIikAcgg-zW8OkQHBDhvW6pG0okIc6G3A5cF5G9IdM/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "telefono",
+              "lookupValue": "={{ $json.Telefono }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        704,
+        256
+      ],
+      "id": "51614b17-28e7-4c5a-84ca-95c10278b49e",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "px0flVbICKq2At2u",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0852691-9c8d-4f24-a4b4-b205129770f8",
+              "name": "response",
+              "value": "turno cancelado",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1584,
+        256
+      ],
+      "id": "59a05f3d-85ad-4562-b7b1-c07be105c865",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const telefono = ($input.first().json.Telefono || $input.first().json.telefono || '')\n  .toString()\n  .replace(/\\s+/g, '')\n  .replace(/^\\+34/, '');\n\nreturn [{ json: { Telefono: telefono } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        256
+      ],
+      "id": "3cf1d014-1dd6-4adc-8da2-684ef1b74950",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "startIndex": "={{ $('Google Sheets').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1136,
+        256
+      ],
+      "id": "13ebabbf-e78f-4db3-9b75-36c670792a49",
+      "name": "Delete rows or columns from sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "px0flVbICKq2At2u",
+          "name": "TORNASOL"
+        }
+      }
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-13T15:42:11.121Z",
+      "createdAt": "2026-03-13T15:42:11.121Z",
+      "role": "workflow:owner",
+      "workflowId": "uA5t9Yv8TwkPyx7N",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-16T19:14:32.552Z",
+  "versionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e"
+}
