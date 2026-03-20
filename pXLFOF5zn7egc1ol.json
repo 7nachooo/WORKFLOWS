@@ -1,0 +1,1363 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-18T16:20:24.000Z",
+    "createdAt": "2026-03-18T16:20:23.860Z",
+    "versionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26",
+    "workflowId": "pXLFOF5zn7egc1ol",
+    "nodes": [
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Prompt Mejorado\nActúa como un extractor de información especializado en conversaciones sobre preferencias inmobiliarias en Argentina.\nTu tarea es procesar el siguiente mensaje y extraer información clave, devolviéndola en formato JSON con una estructura estricta y validada.\n\nEste es el día actual: {{ $now }}\nEste es el mensaje a analizar: {{ $json.query }}\n\nInstrucciones de extracción\nDebes identificar y devolver los siguientes detalles:\n\nNombre del usuario\nCorreo electrónico del usuario\nDía y hora de disponibilidad del usuario, con las siguientes transformaciones obligatorias:\nDía: Siempre se devuelve en el formato YY-MM-DD, estableciendo 2025 como el año fijo.\nHorario de inicio: Se obtiene avanzando 180 minutos desde la hora indicada en el mensaje. Formato HH:MM:SS.\nHorario de finalización: Se calcula retrocediendo 120 minutos al horario de inicio. Formato HH:MM:SS.\nFormato de salida\nEl resultado debe ser un objeto JSON con la siguiente estructura estricta:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"[Día en formato YY-MM-DD]\",\n    \"horario_inicio\": \"[Hora después de retroceder 120 min, formato HH:MM:SS]\",\n    \"horario_fin\": \"[Hora después de sumar 60 min a horario_inicio, formato HH:MM:SS]\",\n    \"email\": \"[Correo electrónico del usuario]\",\n    \"nombre\": \"[Nombre completo del usuario]\"\n  }\n}\nEjemplos\nEjemplo 1\nEntrada:\n\"Me gustaría buscar en Buenos Aires. Estoy interesado en una casa. Quiero comprar. Estoy disponible el lunes a las 15:00.\"\n\nSalida esperada:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"2025-08-18\",\n    \"horario_inicio\": \"13:00:00\",\n    \"horario_fin\": \"14:00:00\",\n    \"email\": \"usuario@email.com\",\n    \"nombre\": \"Juan Pérez\"\n  }\n}\nEjemplo 2\nEntrada:\n\"Para alquiler, prefiero algo en Mendoza, un departamento. Puedo el viernes a las 10:00 AM.\"\n\nSalida esperada:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"2025-05-16\",\n    \"horario_inicio\": \"08:00:00\",\n    \"horario_fin\": \"09:00:00\",\n    \"email\": \"ejemplo@email.com\",\n    \"nombre\": \"María Gómez\"\n  }\n}\nNotas adicionales:\nAsegúrate de que las claves JSON sean consistentes con el formato de salida especificado.\nConsidera posibles variaciones en la redacción cuando el usuario mencione su disponibilidad.\nManeja formatos de hora como \"PM\" y \"AM\" correctamente al convertirlos a formato de 24 horas.\nEn caso de no encontrar una hora en el mensaje, devuelve \"horario_inicio\": \"00:00:00\" y \"horario_fin\": \"01:00:00\".\nAsegúrate de que el año siempre sea 2025, sin importar la fecha indicada por el usuario.\nToma un respiro y resuelve este problema paso a paso.\n-Si alguna vez devuelves en la fecha dada el año de esta forma \"25\" y no devuelves 2025, me muero",
+                "role": "system"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {
+            "temperature": 0.1
+          }
+        },
+        "id": "dc009bb2-c9a6-4197-b9eb-78f3a492f41e",
+        "name": "OpenAI",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.7,
+        "position": [
+          -400,
+          0
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const inputData = items[0].json;\n\n// Usamos el objeto \"query\" directamente, ya que es un objeto.\nlet parsedData = (inputData.query && typeof inputData.query === \"object\") ? inputData.query : {};\n\n// Función para corregir el email (si hace falta insertar \"@\" antes del dominio)\nfunction fixEmail(email) {\n    if (email.includes(\"@\")) {\n        return email;\n    }\n    const domains = [\"gmail.com\", \"hotmail.com\", \"yahoo.com\", \"outlook.com\", \"live.com\", \"icloud.com\"];\n    for (const domain of domains) {\n        const pos = email.indexOf(domain);\n        if (pos !== -1) {\n            return email.substring(0, pos) + \"@\" + email.substring(pos);\n        }\n    }\n    // Si no se encuentra un dominio conocido, inserta \"@\" a la mitad\n    const mid = Math.floor(email.length / 2);\n    return email.substring(0, mid) + \"@\" + email.substring(mid);\n}\n\n// Función para convertir la fecha a formato YYYY-MM-DD.\n// Soporta varios formatos:\n// - Si el delimitador es \"-\" se asume año-mes-día (YY-MM-DD o YYYY-MM-DD)\n// - Si el delimitador es \"/\" se asume día/mes/año (DD/MM/YY o DD/MM/YYYY)\n// En los casos en que el año venga en dos dígitos se forzará a 2025.\nfunction parseDate(dateStr) {\n    if (!dateStr) return \"2025-01-01\";\n    dateStr = dateStr.trim();\n    \n    // Detectamos el delimitador usado\n    let delimiter = dateStr.includes(\"-\") ? \"-\" : \"/\";\n    const parts = dateStr.split(delimiter);\n    if (parts.length !== 3) return \"2025-01-01\";\n    \n    let day, month, year;\n    \n    if (delimiter === \"-\") {\n        // Formato año-mes-día\n        if (parts[0].length === 4) {\n            // Ej: 2025-02-20\n            year = parts[0];\n        } else {\n            // Para YY, forzamos el año a 2025\n            year = \"2025\";\n        }\n        month = parts[1].padStart(2, \"0\");\n        day = parts[2].padStart(2, \"0\");\n    } else {\n        // Delimitador \"/\", se asume normalmente DD/MM/YY o DD/MM/YYYY\n        // Pero si el primer componente tiene 4 dígitos, se asume año-mes-día.\n        if (parts[0].length === 4) {\n            // Ej: 2025/02/20\n            year = parts[0];\n            month = parts[1].padStart(2, \"0\");\n            day = parts[2].padStart(2, \"0\");\n        } else {\n            // Se asume DD/MM/YY\n            day = parts[0].padStart(2, \"0\");\n            month = parts[1].padStart(2, \"0\");\n            // Si el año es de 4 dígitos se respeta, sino se fuerza a 2025\n            year = parts[2].length === 4 ? parts[2] : \"2025\";\n        }\n    }\n    return `${year}-${month}-${day}`;\n}\n\n// Función para ajustar la hora\n// timeStr debe venir en formato \"HH:MM\" o \"HH:MM:SS\"\nfunction adjustTime(timeStr, adjustment) {\n    if (!timeStr) return \"00:00:00\";\n    // Tomamos los primeros 5 caracteres para obtener \"HH:MM\"\n    const cleanTime = timeStr.substring(0, 5);\n    const parts = cleanTime.split(\":\");\n    let hours = parseInt(parts[0], 10);\n    let minutes = parseInt(parts[1], 10);\n    let totalMinutes = hours * 60 + minutes + adjustment;\n    // Normalizamos para que el resultado esté entre 0 y 24*60 (considerando ciclo de 24 hs)\n    totalMinutes = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60);\n    const newHours = Math.floor(totalMinutes / 60);\n    const newMinutes = totalMinutes % 60;\n    return `${newHours.toString().padStart(2, \"0\")}:${newMinutes.toString().padStart(2, \"0\")}:00`;\n}\n\n// Extraemos los valores necesarios\nconst nombre = parsedData.nombre ? parsedData.nombre.trim() : \"Nombre no encontrado\";\nconst email = parsedData.email ? fixEmail(parsedData.email.trim()) : \"email@noencontrado.com\";\nconst dia = parsedData[\"Dia elegido\"] ? parseDate(parsedData[\"Dia elegido\"].trim()) : \"2025-01-01\";\nconst horarioBase = parsedData[\"horario elegido\"] ? parsedData[\"horario elegido\"].trim() : \"00:00\";\n\n// Calcular horarios:\n// horario_inicio: 120 minutos *antes* del horario elegido.\nconst horarioInicio = adjustTime(horarioBase, -120);\n// horario_fin: 60 minutos *después* del horario_inicio.\nconst horarioFin = adjustTime(horarioInicio.substring(0, 5), 60);\n\nreturn [{\n  json: {\n    \"disponibilidad\": {\n      \"dia\": dia,\n      \"horario_inicio\": horarioInicio,\n      \"horario_fin\": horarioFin,\n      \"email\": email,\n      \"nombre\": nombre\n    }\n  }\n}];\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -400,
+          832
+        ],
+        "id": "b1669f90-0754-4144-896f-508a811bf0e7",
+        "name": "Code1"
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "NOMBRE"
+              },
+              {
+                "name": "TELEFONO"
+              },
+              {
+                "name": "CORREO"
+              },
+              {
+                "name": "Servicio"
+              },
+              {
+                "name": "Fecha"
+              },
+              {
+                "name": "Hora"
+              },
+              {
+                "name": "Notas"
+              },
+              {
+                "name": "ID CRM"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          416
+        ],
+        "id": "739b2127-b441-404f-820b-92d61b8a619c",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=Fecha: {{ $('When Executed by Another Workflow').item.json.Fecha }} \nHora:{{ $('When Executed by Another Workflow').item.json.Hora }} \nCorreo:{{ $json.CORREO }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Eres un asistente que convierte texto en formato de fecha y hora válido para Google Calendar (ISO 8601 con zona horaria española). Usa como referencia la fecha actual {{$now}}.\n\nLa entrada puede mencionar un día (como 'martes', 'jueves que viene', etc.) y una hora (como '12:30').\n\nDevuelve solo la fecha y hora formateadas en este formato exacto:\nYYYY-MM-DDTHH:mm:ss+02:00\n\nEjemplo de salida: 2025-10-23T12:30:00+02:00.\n\nEntrada:\nFecha:{{ $json.Fecha }}\nHora: {{ $json.Hora }}\n\n"
+              }
+            ]
+          },
+          "batching": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.7,
+        "position": [
+          48,
+          416
+        ],
+        "id": "f27b59e2-3ca7-4f68-a30f-a4346b7c87f6",
+        "name": "Basic LLM Chain1"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "gpt-4.1-mini",
+            "mode": "list",
+            "cachedResultName": "gpt-4.1-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          128,
+          640
+        ],
+        "id": "9e734b47-fc01-440e-9656-a18a6f23979f",
+        "name": "OpenAI Chat Model1",
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Hoja 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19y3lfXSbMxZA38M5B_YkzgxYTMzRFzvG6mRfoHIxWF0/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $json.id }}",
+              "telefono": "={{ $('When Executed by Another Workflow').item.json.TELEFONO.toString().replace(/\\s+/g, '').replace(/^\\+34/, '') }}",
+              "correo": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
+              "fecha": "={{  (() => {   const fecha = $('When Executed by Another Workflow').item.json.Fecha;   const hora = $('When Executed by Another Workflow').item.json.Hora;    if (!fecha || !hora) return '';    const d = new Date(`${fecha} ${hora}`);    const dia = String(d.getDate()).padStart(2, '0');   const mes = String(d.getMonth() + 1).padStart(2, '0');   const anio = d.getFullYear();   const horas = String(d.getHours()).padStart(2, '0');   const minutos = String(d.getMinutes()).padStart(2, '0');    return `${dia}-${mes}-${anio} ${horas}:${minutos}`; })() }}",
+              "nombre cliente": "={{ $('When Executed by Another Workflow').item.json.NOMBRE.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
+              "servicio": "={{ $('Code in JavaScript2').item.json.Servicio.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
+              "FUENTE DE LLAMADA": "WHATSAPP"
+            },
+            "matchingColumns": [
+              "telefono"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "telefono",
+                "displayName": "telefono",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "correo",
+                "displayName": "correo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "fecha",
+                "displayName": "fecha",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "nombre cliente",
+                "displayName": "nombre cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "servicio",
+                "displayName": "servicio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "FUENTE DE LLAMADA",
+                "displayName": "FUENTE DE LLAMADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "description",
+                "displayName": "description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "created",
+                "displayName": "created",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "updated",
+                "displayName": "updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "etag",
+                "displayName": "etag",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "eventType",
+                "displayName": "eventType",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "htmlLink",
+                "displayName": "htmlLink",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "iCalUID",
+                "displayName": "iCalUID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "kind",
+                "displayName": "kind",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "reminders",
+                "displayName": "reminders",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "sequence",
+                "displayName": "sequence",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          848,
+          224
+        ],
+        "id": "9a67b4c3-4d0b-43f7-8dde-f267c2f9ed92",
+        "name": "Append or update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "px0flVbICKq2At2u",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "E5GlnncN4YljGXGh",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/E5GlnncN4YljGXGh",
+            "cachedResultName": "RECORDATORIO CITA TORNASOL"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "FECHA": "={{ $json.start.dateTime }}",
+              "NOMBRE": "={{ $json.summary }}",
+              "CalendarID": "={{ $('CREADOR DE CITA').item.json.id }}",
+              "CORREO": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
+              "SERVICIO": "={{ $json.summary }}",
+              "TELEFONO": "={{ $('When Executed by Another Workflow').item.json.TELEFONO }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "CORREO",
+                "displayName": "CORREO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "NOMBRE",
+                "displayName": "NOMBRE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "FECHA",
+                "displayName": "FECHA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "SERVICIO",
+                "displayName": "SERVICIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "CalendarID",
+                "displayName": "CalendarID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "TELEFONO",
+                "displayName": "TELEFONO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          848,
+          608
+        ],
+        "id": "a131b76e-d0cf-4604-84de-fc7cf3cea6dc",
+        "name": "EMAIL RECORDATORIO",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "npfmbaMPk6mgalz2",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/npfmbaMPk6mgalz2",
+            "cachedResultName": "CONFIRMACION CITA TORNASOL"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "NOMBRE": "={{ $('When Executed by Another Workflow').item.json.NOMBRE }}",
+              "SERVICIO": "={{ $json.summary }}",
+              "FECHA": "={{ $json.start.dateTime }}",
+              "CORREO": "={{ $('When Executed by Another Workflow').item.json.CORREO }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "CORREO",
+                "displayName": "CORREO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "NOMBRE",
+                "displayName": "NOMBRE",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "FECHA",
+                "displayName": "FECHA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "SERVICIO",
+                "displayName": "SERVICIO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          848,
+          416
+        ],
+        "id": "e019d8b2-3c25-4169-8e9e-390cc75e3f1f",
+        "name": "EMAIL CONFIRMACION",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  // Masajes relajantes\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Masaje Zen Vital\": 60,\n  \"Ritual Serena\": 60,\n  // Masajes terapéuticos\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  // Masajes especiales\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Masaje Para Parejas\": 60,\n  // Bienestar y energía\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  // Tratamientos faciales\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  // Depilación\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\nconst colores = {\n  // Masajes relajantes → ID 2 Salvia (verde)\n  \"Masaje Relajante\": \"2\",\n  \"Masaje Ayurveda Relajante\": \"2\",\n  \"Masaje Balsámico\": \"2\",\n  \"Masaje Zen Vital\": \"2\",\n  \"Ritual Serena\": \"2\",\n  // Masajes terapéuticos → ID 7 Pavo real (azul)\n  \"Masaje Descontracturante\": \"7\",\n  \"Masaje Tailandés Con Aceite\": \"7\",\n  \"Masaje Lomi Lomi\": \"7\",\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"7\",\n  \"Drenaje Linfático Manual\": \"7\",\n  // Masajes especiales → ID 6 Mandarina (naranja)\n  \"Masaje Adelgazante Y Anticelulítico\": \"6\",\n  \"Masajes Para Embarazada\": \"6\",\n  \"Masaje Para Parejas\": \"6\",\n  // Bienestar y energía → ID 3 Uva (morado)\n  \"Reflexología\": \"3\",\n  \"Sanación Con Reiki\": \"3\",\n  // Tratamientos faciales → ID 4 Flamenco (rosa)\n  \"Masaje Facial Japonés Kobido\": \"4\",\n  \"Limpieza De Piel Intensa\": \"4\",\n  \"Limpieza De Piel Premium\": \"4\",\n  \"Dermapen\": \"4\",\n  \"The Glow Session\": \"4\",\n  \"Exoxomas\": \"4\",\n  // Depilación → ID 5 Banana (amarillo)\n  \"Depilación Ingles Completas (Cera)\": \"5\",\n  \"Ingles Completas Y Medias Piernas\": \"5\"\n};\n\nconst fecha = input.Fecha || \"\";\nconst hora  = input.Hora  || \"\";\n\nif (!fecha || !hora) {\n  throw new Error(`Faltan campos Fecha o Hora en el input`);\n}\n\nconst servicio = (input.Servicio || \"\")\n  .split(' ')\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(' ');\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio]   || \"1\";\n\nconst start_time = `${fecha}T${hora}:00+01:00`;\n\nconst [horas, minutos] = hora.split(':').map(Number);\nconst totalMinutos = horas * 60 + minutos + duracion;\nconst horaFin = String(Math.floor(totalMinutos / 60)).padStart(2, '0');\nconst minFin  = String(totalMinutos % 60).padStart(2, '0');\nconst end_time = `${fecha}T${horaFin}:${minFin}:00+01:00`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,\n    hora,\n    servicio,\n    duracion,\n    colorId,\n    start_time,\n    end_time\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -176,
+          416
+        ],
+        "id": "ae84a0c8-0f1c-42fa-9c69-5f18133e6f06",
+        "name": "Code in JavaScript2"
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  \"Masaje Zen Vital\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Ritual Serena\": 60,\n  \"Masaje Para Parejas\": 60,\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\n// Colores de Google Calendar (IDs del 1 al 11)\nconst colores = {\n  \"Masaje Relajante\": \"1\",           // Lavanda\n  \"Masaje Ayurveda Relajante\": \"2\",  // Salvia\n  \"Masaje Descontracturante\": \"3\",   // Uva\n  \"Masaje Tailandés Con Aceite\": \"4\",// Flamenco\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"5\", // Banana\n  \"Masaje Lomi Lomi\": \"6\",           // Mandarina\n  \"Masaje Adelgazante Y Anticelulítico\": \"7\", // Pavo real\n  \"Masajes Para Embarazada\": \"8\",    // Grafito\n  \"Drenaje Linfático Manual\": \"9\",   // Arándano\n  \"Masaje Zen Vital\": \"10\",          // Albahaca\n  \"Masaje Balsámico\": \"11\",          // Tomate\n  \"Ritual Serena\": \"1\",\n  \"Masaje Para Parejas\": \"3\",\n  \"Reflexología\": \"5\",\n  \"Sanación Con Reiki\": \"6\",\n  \"Masaje Facial Japonés Kobido\": \"7\",\n  \"Limpieza De Piel Intensa\": \"9\",\n  \"Limpieza De Piel Premium\": \"10\",\n  \"Dermapen\": \"11\",\n  \"The Glow Session\": \"2\",\n  \"Exoxomas\": \"4\",\n  \"Depilación Ingles Completas (Cera)\": \"8\",\n  \"Ingles Completas Y Medias Piernas\": \"6\"\n};\n\nconst isoText = input.text || \"\";\nconst isoMatch = isoText.match(/(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2})/);\nif (!isoMatch) {\n  throw new Error(`No se pudo extraer fecha/hora de: \"${isoText}\"`);\n}\n\nconst fecha = isoMatch[1];\nconst hora  = isoMatch[2];\n\nconst servicio = ($('Code in JavaScript2').first().json.Servicio || \"\")\n  .split(' ')\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(' ');\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio] || \"1\";\n\nconst start_time = `${fecha}T${hora}:00+01:00`;\nconst [horas, minutos] = hora.split(':').map(Number);\nconst totalMinutos = horas * 60 + minutos + duracion;\nconst horaFin = String(Math.floor(totalMinutos / 60)).padStart(2, '0');\nconst minFin  = String(totalMinutos % 60).padStart(2, '0');\nconst end_time = `${fecha}T${horaFin}:${minFin}:00+01:00`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,\n    hora,\n    servicio,\n    duracion,\n    colorId,\n    start_time,\n    end_time\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          416
+        ],
+        "id": "a5087de2-8361-4a1f-a7f7-cb372572a8bb",
+        "name": "FORMATEADOR DE FECHA1"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Basic LLM Chain1": {
+        "main": [
+          [
+            {
+              "node": "FORMATEADOR DE FECHA1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript2": {
+        "main": [
+          [
+            {
+              "node": "Basic LLM Chain1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "FORMATEADOR DE FECHA1": {
+        "main": [
+          [
+            {
+              "node": "Append or update row in sheet",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "EMAIL RECORDATORIO",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "EMAIL CONFIRMACION",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version aeb47972",
+    "description": "",
+    "autosaved": false
+  },
+  "activeVersionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26",
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "FORMATEADOR DE FECHA1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FORMATEADOR DE FECHA1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "EMAIL RECORDATORIO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "EMAIL CONFIRMACION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-13T15:40:23.689Z",
+  "id": "pXLFOF5zn7egc1ol",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "TOOL AGENDAR",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Prompt Mejorado\nActúa como un extractor de información especializado en conversaciones sobre preferencias inmobiliarias en Argentina.\nTu tarea es procesar el siguiente mensaje y extraer información clave, devolviéndola en formato JSON con una estructura estricta y validada.\n\nEste es el día actual: {{ $now }}\nEste es el mensaje a analizar: {{ $json.query }}\n\nInstrucciones de extracción\nDebes identificar y devolver los siguientes detalles:\n\nNombre del usuario\nCorreo electrónico del usuario\nDía y hora de disponibilidad del usuario, con las siguientes transformaciones obligatorias:\nDía: Siempre se devuelve en el formato YY-MM-DD, estableciendo 2025 como el año fijo.\nHorario de inicio: Se obtiene avanzando 180 minutos desde la hora indicada en el mensaje. Formato HH:MM:SS.\nHorario de finalización: Se calcula retrocediendo 120 minutos al horario de inicio. Formato HH:MM:SS.\nFormato de salida\nEl resultado debe ser un objeto JSON con la siguiente estructura estricta:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"[Día en formato YY-MM-DD]\",\n    \"horario_inicio\": \"[Hora después de retroceder 120 min, formato HH:MM:SS]\",\n    \"horario_fin\": \"[Hora después de sumar 60 min a horario_inicio, formato HH:MM:SS]\",\n    \"email\": \"[Correo electrónico del usuario]\",\n    \"nombre\": \"[Nombre completo del usuario]\"\n  }\n}\nEjemplos\nEjemplo 1\nEntrada:\n\"Me gustaría buscar en Buenos Aires. Estoy interesado en una casa. Quiero comprar. Estoy disponible el lunes a las 15:00.\"\n\nSalida esperada:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"2025-08-18\",\n    \"horario_inicio\": \"13:00:00\",\n    \"horario_fin\": \"14:00:00\",\n    \"email\": \"usuario@email.com\",\n    \"nombre\": \"Juan Pérez\"\n  }\n}\nEjemplo 2\nEntrada:\n\"Para alquiler, prefiero algo en Mendoza, un departamento. Puedo el viernes a las 10:00 AM.\"\n\nSalida esperada:\n\njson\nCopiar\nEditar\n{\n  \"disponibilidad\": {\n    \"dia\": \"2025-05-16\",\n    \"horario_inicio\": \"08:00:00\",\n    \"horario_fin\": \"09:00:00\",\n    \"email\": \"ejemplo@email.com\",\n    \"nombre\": \"María Gómez\"\n  }\n}\nNotas adicionales:\nAsegúrate de que las claves JSON sean consistentes con el formato de salida especificado.\nConsidera posibles variaciones en la redacción cuando el usuario mencione su disponibilidad.\nManeja formatos de hora como \"PM\" y \"AM\" correctamente al convertirlos a formato de 24 horas.\nEn caso de no encontrar una hora en el mensaje, devuelve \"horario_inicio\": \"00:00:00\" y \"horario_fin\": \"01:00:00\".\nAsegúrate de que el año siempre sea 2025, sin importar la fecha indicada por el usuario.\nToma un respiro y resuelve este problema paso a paso.\n-Si alguna vez devuelves en la fecha dada el año de esta forma \"25\" y no devuelves 2025, me muero",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "dc009bb2-c9a6-4197-b9eb-78f3a492f41e",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        -400,
+        0
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = items[0].json;\n\n// Usamos el objeto \"query\" directamente, ya que es un objeto.\nlet parsedData = (inputData.query && typeof inputData.query === \"object\") ? inputData.query : {};\n\n// Función para corregir el email (si hace falta insertar \"@\" antes del dominio)\nfunction fixEmail(email) {\n    if (email.includes(\"@\")) {\n        return email;\n    }\n    const domains = [\"gmail.com\", \"hotmail.com\", \"yahoo.com\", \"outlook.com\", \"live.com\", \"icloud.com\"];\n    for (const domain of domains) {\n        const pos = email.indexOf(domain);\n        if (pos !== -1) {\n            return email.substring(0, pos) + \"@\" + email.substring(pos);\n        }\n    }\n    // Si no se encuentra un dominio conocido, inserta \"@\" a la mitad\n    const mid = Math.floor(email.length / 2);\n    return email.substring(0, mid) + \"@\" + email.substring(mid);\n}\n\n// Función para convertir la fecha a formato YYYY-MM-DD.\n// Soporta varios formatos:\n// - Si el delimitador es \"-\" se asume año-mes-día (YY-MM-DD o YYYY-MM-DD)\n// - Si el delimitador es \"/\" se asume día/mes/año (DD/MM/YY o DD/MM/YYYY)\n// En los casos en que el año venga en dos dígitos se forzará a 2025.\nfunction parseDate(dateStr) {\n    if (!dateStr) return \"2025-01-01\";\n    dateStr = dateStr.trim();\n    \n    // Detectamos el delimitador usado\n    let delimiter = dateStr.includes(\"-\") ? \"-\" : \"/\";\n    const parts = dateStr.split(delimiter);\n    if (parts.length !== 3) return \"2025-01-01\";\n    \n    let day, month, year;\n    \n    if (delimiter === \"-\") {\n        // Formato año-mes-día\n        if (parts[0].length === 4) {\n            // Ej: 2025-02-20\n            year = parts[0];\n        } else {\n            // Para YY, forzamos el año a 2025\n            year = \"2025\";\n        }\n        month = parts[1].padStart(2, \"0\");\n        day = parts[2].padStart(2, \"0\");\n    } else {\n        // Delimitador \"/\", se asume normalmente DD/MM/YY o DD/MM/YYYY\n        // Pero si el primer componente tiene 4 dígitos, se asume año-mes-día.\n        if (parts[0].length === 4) {\n            // Ej: 2025/02/20\n            year = parts[0];\n            month = parts[1].padStart(2, \"0\");\n            day = parts[2].padStart(2, \"0\");\n        } else {\n            // Se asume DD/MM/YY\n            day = parts[0].padStart(2, \"0\");\n            month = parts[1].padStart(2, \"0\");\n            // Si el año es de 4 dígitos se respeta, sino se fuerza a 2025\n            year = parts[2].length === 4 ? parts[2] : \"2025\";\n        }\n    }\n    return `${year}-${month}-${day}`;\n}\n\n// Función para ajustar la hora\n// timeStr debe venir en formato \"HH:MM\" o \"HH:MM:SS\"\nfunction adjustTime(timeStr, adjustment) {\n    if (!timeStr) return \"00:00:00\";\n    // Tomamos los primeros 5 caracteres para obtener \"HH:MM\"\n    const cleanTime = timeStr.substring(0, 5);\n    const parts = cleanTime.split(\":\");\n    let hours = parseInt(parts[0], 10);\n    let minutes = parseInt(parts[1], 10);\n    let totalMinutes = hours * 60 + minutes + adjustment;\n    // Normalizamos para que el resultado esté entre 0 y 24*60 (considerando ciclo de 24 hs)\n    totalMinutes = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60);\n    const newHours = Math.floor(totalMinutes / 60);\n    const newMinutes = totalMinutes % 60;\n    return `${newHours.toString().padStart(2, \"0\")}:${newMinutes.toString().padStart(2, \"0\")}:00`;\n}\n\n// Extraemos los valores necesarios\nconst nombre = parsedData.nombre ? parsedData.nombre.trim() : \"Nombre no encontrado\";\nconst email = parsedData.email ? fixEmail(parsedData.email.trim()) : \"email@noencontrado.com\";\nconst dia = parsedData[\"Dia elegido\"] ? parseDate(parsedData[\"Dia elegido\"].trim()) : \"2025-01-01\";\nconst horarioBase = parsedData[\"horario elegido\"] ? parsedData[\"horario elegido\"].trim() : \"00:00\";\n\n// Calcular horarios:\n// horario_inicio: 120 minutos *antes* del horario elegido.\nconst horarioInicio = adjustTime(horarioBase, -120);\n// horario_fin: 60 minutos *después* del horario_inicio.\nconst horarioFin = adjustTime(horarioInicio.substring(0, 5), 60);\n\nreturn [{\n  json: {\n    \"disponibilidad\": {\n      \"dia\": dia,\n      \"horario_inicio\": horarioInicio,\n      \"horario_fin\": horarioFin,\n      \"email\": email,\n      \"nombre\": nombre\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        832
+      ],
+      "id": "b1669f90-0754-4144-896f-508a811bf0e7",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "NOMBRE"
+            },
+            {
+              "name": "TELEFONO"
+            },
+            {
+              "name": "CORREO"
+            },
+            {
+              "name": "Servicio"
+            },
+            {
+              "name": "Fecha"
+            },
+            {
+              "name": "Hora"
+            },
+            {
+              "name": "Notas"
+            },
+            {
+              "name": "ID CRM"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        416
+      ],
+      "id": "739b2127-b441-404f-820b-92d61b8a619c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Fecha: {{ $('When Executed by Another Workflow').item.json.Fecha }} \nHora:{{ $('When Executed by Another Workflow').item.json.Hora }} \nCorreo:{{ $json.CORREO }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un asistente que convierte texto en formato de fecha y hora válido para Google Calendar (ISO 8601 con zona horaria española). Usa como referencia la fecha actual {{$now}}.\n\nLa entrada puede mencionar un día (como 'martes', 'jueves que viene', etc.) y una hora (como '12:30').\n\nDevuelve solo la fecha y hora formateadas en este formato exacto:\nYYYY-MM-DDTHH:mm:ss+02:00\n\nEjemplo de salida: 2025-10-23T12:30:00+02:00.\n\nEntrada:\nFecha:{{ $json.Fecha }}\nHora: {{ $json.Hora }}\n\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        48,
+        416
+      ],
+      "id": "f27b59e2-3ca7-4f68-a30f-a4346b7c87f6",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        640
+      ],
+      "id": "9e734b47-fc01-440e-9656-a18a6f23979f",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19y3lfXSbMxZA38M5B_YkzgxYTMzRFzvG6mRfoHIxWF0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "telefono": "={{ $('When Executed by Another Workflow').item.json.TELEFONO.toString().replace(/\\s+/g, '').replace(/^\\+34/, '') }}",
+            "correo": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
+            "fecha": "={{  (() => {   const fecha = $('When Executed by Another Workflow').item.json.Fecha;   const hora = $('When Executed by Another Workflow').item.json.Hora;    if (!fecha || !hora) return '';    const d = new Date(`${fecha} ${hora}`);    const dia = String(d.getDate()).padStart(2, '0');   const mes = String(d.getMonth() + 1).padStart(2, '0');   const anio = d.getFullYear();   const horas = String(d.getHours()).padStart(2, '0');   const minutos = String(d.getMinutes()).padStart(2, '0');    return `${dia}-${mes}-${anio} ${horas}:${minutos}`; })() }}",
+            "nombre cliente": "={{ $('When Executed by Another Workflow').item.json.NOMBRE.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
+            "servicio": "={{ $('Code in JavaScript2').item.json.Servicio.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
+            "FUENTE DE LLAMADA": "WHATSAPP"
+          },
+          "matchingColumns": [
+            "telefono"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "telefono",
+              "displayName": "telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "correo",
+              "displayName": "correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre cliente",
+              "displayName": "nombre cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FUENTE DE LLAMADA",
+              "displayName": "FUENTE DE LLAMADA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created",
+              "displayName": "created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated",
+              "displayName": "updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "etag",
+              "displayName": "etag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "eventType",
+              "displayName": "eventType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "htmlLink",
+              "displayName": "htmlLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "iCalUID",
+              "displayName": "iCalUID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kind",
+              "displayName": "kind",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "reminders",
+              "displayName": "reminders",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sequence",
+              "displayName": "sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        848,
+        224
+      ],
+      "id": "9a67b4c3-4d0b-43f7-8dde-f267c2f9ed92",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "px0flVbICKq2At2u",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "E5GlnncN4YljGXGh",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/E5GlnncN4YljGXGh",
+          "cachedResultName": "RECORDATORIO CITA TORNASOL"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "FECHA": "={{ $json.start.dateTime }}",
+            "NOMBRE": "={{ $json.summary }}",
+            "CalendarID": "={{ $('CREADOR DE CITA').item.json.id }}",
+            "CORREO": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
+            "SERVICIO": "={{ $json.summary }}",
+            "TELEFONO": "={{ $('When Executed by Another Workflow').item.json.TELEFONO }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CORREO",
+              "displayName": "CORREO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "NOMBRE",
+              "displayName": "NOMBRE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "FECHA",
+              "displayName": "FECHA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "SERVICIO",
+              "displayName": "SERVICIO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "CalendarID",
+              "displayName": "CalendarID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "TELEFONO",
+              "displayName": "TELEFONO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        608
+      ],
+      "id": "a131b76e-d0cf-4604-84de-fc7cf3cea6dc",
+      "name": "EMAIL RECORDATORIO",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "npfmbaMPk6mgalz2",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/npfmbaMPk6mgalz2",
+          "cachedResultName": "CONFIRMACION CITA TORNASOL"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NOMBRE": "={{ $('When Executed by Another Workflow').item.json.NOMBRE }}",
+            "SERVICIO": "={{ $json.summary }}",
+            "FECHA": "={{ $json.start.dateTime }}",
+            "CORREO": "={{ $('When Executed by Another Workflow').item.json.CORREO }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "CORREO",
+              "displayName": "CORREO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "NOMBRE",
+              "displayName": "NOMBRE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "FECHA",
+              "displayName": "FECHA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "SERVICIO",
+              "displayName": "SERVICIO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        416
+      ],
+      "id": "e019d8b2-3c25-4169-8e9e-390cc75e3f1f",
+      "name": "EMAIL CONFIRMACION",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  // Masajes relajantes\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Masaje Zen Vital\": 60,\n  \"Ritual Serena\": 60,\n  // Masajes terapéuticos\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  // Masajes especiales\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Masaje Para Parejas\": 60,\n  // Bienestar y energía\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  // Tratamientos faciales\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  // Depilación\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\nconst colores = {\n  // Masajes relajantes → ID 2 Salvia (verde)\n  \"Masaje Relajante\": \"2\",\n  \"Masaje Ayurveda Relajante\": \"2\",\n  \"Masaje Balsámico\": \"2\",\n  \"Masaje Zen Vital\": \"2\",\n  \"Ritual Serena\": \"2\",\n  // Masajes terapéuticos → ID 7 Pavo real (azul)\n  \"Masaje Descontracturante\": \"7\",\n  \"Masaje Tailandés Con Aceite\": \"7\",\n  \"Masaje Lomi Lomi\": \"7\",\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"7\",\n  \"Drenaje Linfático Manual\": \"7\",\n  // Masajes especiales → ID 6 Mandarina (naranja)\n  \"Masaje Adelgazante Y Anticelulítico\": \"6\",\n  \"Masajes Para Embarazada\": \"6\",\n  \"Masaje Para Parejas\": \"6\",\n  // Bienestar y energía → ID 3 Uva (morado)\n  \"Reflexología\": \"3\",\n  \"Sanación Con Reiki\": \"3\",\n  // Tratamientos faciales → ID 4 Flamenco (rosa)\n  \"Masaje Facial Japonés Kobido\": \"4\",\n  \"Limpieza De Piel Intensa\": \"4\",\n  \"Limpieza De Piel Premium\": \"4\",\n  \"Dermapen\": \"4\",\n  \"The Glow Session\": \"4\",\n  \"Exoxomas\": \"4\",\n  // Depilación → ID 5 Banana (amarillo)\n  \"Depilación Ingles Completas (Cera)\": \"5\",\n  \"Ingles Completas Y Medias Piernas\": \"5\"\n};\n\nconst fecha = input.Fecha || \"\";\nconst hora  = input.Hora  || \"\";\n\nif (!fecha || !hora) {\n  throw new Error(`Faltan campos Fecha o Hora en el input`);\n}\n\nconst servicio = (input.Servicio || \"\")\n  .split(' ')\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(' ');\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio]   || \"1\";\n\nconst start_time = `${fecha}T${hora}:00+01:00`;\n\nconst [horas, minutos] = hora.split(':').map(Number);\nconst totalMinutos = horas * 60 + minutos + duracion;\nconst horaFin = String(Math.floor(totalMinutos / 60)).padStart(2, '0');\nconst minFin  = String(totalMinutos % 60).padStart(2, '0');\nconst end_time = `${fecha}T${horaFin}:${minFin}:00+01:00`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,\n    hora,\n    servicio,\n    duracion,\n    colorId,\n    start_time,\n    end_time\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        416
+      ],
+      "id": "ae84a0c8-0f1c-42fa-9c69-5f18133e6f06",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  \"Masaje Zen Vital\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Ritual Serena\": 60,\n  \"Masaje Para Parejas\": 60,\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\n// Colores de Google Calendar (IDs del 1 al 11)\nconst colores = {\n  \"Masaje Relajante\": \"1\",           // Lavanda\n  \"Masaje Ayurveda Relajante\": \"2\",  // Salvia\n  \"Masaje Descontracturante\": \"3\",   // Uva\n  \"Masaje Tailandés Con Aceite\": \"4\",// Flamenco\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"5\", // Banana\n  \"Masaje Lomi Lomi\": \"6\",           // Mandarina\n  \"Masaje Adelgazante Y Anticelulítico\": \"7\", // Pavo real\n  \"Masajes Para Embarazada\": \"8\",    // Grafito\n  \"Drenaje Linfático Manual\": \"9\",   // Arándano\n  \"Masaje Zen Vital\": \"10\",          // Albahaca\n  \"Masaje Balsámico\": \"11\",          // Tomate\n  \"Ritual Serena\": \"1\",\n  \"Masaje Para Parejas\": \"3\",\n  \"Reflexología\": \"5\",\n  \"Sanación Con Reiki\": \"6\",\n  \"Masaje Facial Japonés Kobido\": \"7\",\n  \"Limpieza De Piel Intensa\": \"9\",\n  \"Limpieza De Piel Premium\": \"10\",\n  \"Dermapen\": \"11\",\n  \"The Glow Session\": \"2\",\n  \"Exoxomas\": \"4\",\n  \"Depilación Ingles Completas (Cera)\": \"8\",\n  \"Ingles Completas Y Medias Piernas\": \"6\"\n};\n\nconst isoText = input.text || \"\";\nconst isoMatch = isoText.match(/(\\d{4}-\\d{2}-\\d{2})T(\\d{2}:\\d{2})/);\nif (!isoMatch) {\n  throw new Error(`No se pudo extraer fecha/hora de: \"${isoText}\"`);\n}\n\nconst fecha = isoMatch[1];\nconst hora  = isoMatch[2];\n\nconst servicio = ($('Code in JavaScript2').first().json.Servicio || \"\")\n  .split(' ')\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(' ');\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio] || \"1\";\n\nconst start_time = `${fecha}T${hora}:00+01:00`;\nconst [horas, minutos] = hora.split(':').map(Number);\nconst totalMinutos = horas * 60 + minutos + duracion;\nconst horaFin = String(Math.floor(totalMinutos / 60)).padStart(2, '0');\nconst minFin  = String(totalMinutos % 60).padStart(2, '0');\nconst end_time = `${fecha}T${horaFin}:${minFin}:00+01:00`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,\n    hora,\n    servicio,\n    duracion,\n    colorId,\n    start_time,\n    end_time\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        416
+      ],
+      "id": "a5087de2-8361-4a1f-a7f7-cb372572a8bb",
+      "name": "FORMATEADOR DE FECHA1"
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {
+    "Code1": [
+      {
+        "json": {
+          "disponibilidad": {
+            "dia": "2025-02-27",
+            "horario_inicio": "12:00:00",
+            "horario_fin": "13:00:00",
+            "email": "lala@gmail.com",
+            "nombre": "Ignacio Leo"
+          }
+        }
+      }
+    ],
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "NOMBRE": "Clara Martínez",
+          "TELEFONO": "615243789",
+          "CORREO": "",
+          "Servicio": "Masaje Ayurveda Relajante",
+          "Fecha": "2026-03-19",
+          "Hora": "14:00",
+          "Notas": "\n",
+          "ID CRM": "584"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-13T15:40:23.691Z",
+      "createdAt": "2026-03-13T15:40:23.691Z",
+      "role": "workflow:owner",
+      "workflowId": "pXLFOF5zn7egc1ol",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-18T16:29:32.220Z",
+  "versionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26"
+}
