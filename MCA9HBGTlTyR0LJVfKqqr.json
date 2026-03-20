@@ -1,0 +1,976 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-18T17:42:57.000Z",
+    "createdAt": "2026-03-18T17:42:54.835Z",
+    "versionId": "69dd1965-474d-4e24-bb53-6e33edd77a84",
+    "workflowId": "MCA9HBGTlTyR0LJVfKqqr",
+    "nodes": [
+      {
+        "parameters": {
+          "events": [
+            "charge.succeeded"
+          ]
+        },
+        "type": "n8n-nodes-base.stripeTrigger",
+        "typeVersion": 1,
+        "position": [
+          -64,
+          -192
+        ],
+        "id": "7f17e3e4-069e-48fa-9114-d1e0cfd0ffd8",
+        "name": "Stripe Trigger",
+        "webhookId": "ab173881-1be3-4ecf-9f2c-ecbad574bbf3",
+        "credentials": {
+          "stripeApi": {
+            "id": "F3tH9sYL4ufqHY5x",
+            "name": "Stripe account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Hoja 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "telefono",
+                "lookupValue": "={{ $json.data.object.billing_details.phone.replaceAll(\"+34\",\"\") }}"
+              },
+              {
+                "lookupColumn": "correo",
+                "lookupValue": "={{ $json.data.object.billing_details.email }}"
+              }
+            ]
+          },
+          "combineFilters": "OR",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          160,
+          -192
+        ],
+        "id": "f4d45a75-049d-4613-8f4a-3c7f1cf61815",
+        "name": "Get row(s) in sheet",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "47sUFqSzwRggra9R",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sendTo": "tornasolcontacto3@gmail.com,7nachoo@gmail.com",
+          "subject": "=¡Tu cita está confirmada! {{ $('Code in JavaScript').item.json.servicio }} | {{ $('Code in JavaScript').item.json['nombre cliente'] }}",
+          "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>¡Cita confirmada! · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\" width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\">\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:22px; font-weight:700; color:#2c1a0e; padding-bottom:6px;\n                       text-align:left; letter-spacing:0.3px;\">\n              ¡Te esperamos, {{ $json.summary.split(' - ')[1].split(' ')[0] }}! 🌿\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:26px;\n                       text-align:left; font-style:italic;\">\n              Tu reserva está confirmada y tu plaza asegurada\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:28px; text-align:left;\">\n              Tu cita en <strong>Tornasol Bienestar</strong> está confirmada.<br>\n              A continuación encontrarás todos los detalles de tu reserva:\n            </td>\n          </tr>\n\n          <!-- DETAILS CARD -->\n          <tr>\n            <td style=\"padding-bottom:30px;\">\n              <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n                     style=\"background:#fdf6ee; border-radius:12px; padding:24px; border:1px solid #ede5d8;\">\n                <tr>\n                  <td style=\"font-size:15px; color:#222; line-height:2.1; text-align:left;\">\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                      <span style=\"color:#555;\">{{ $json.summary.split(' - ')[0] }}</span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.start.dateTime.split('T')[0].split('-').reverse().join('-') }}\n                      </span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora de inicio</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.start.dateTime.split('T')[1].substring(0,5) }}\n                      </span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🏁 Hora de fin</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.end.dateTime.split('T')[1].substring(0,5) }}\n                      </span>\n                    </div>\n\n                    <div>\n                      <span style=\"font-weight:700; color:#2c1a0e;\">⏱ Duración</span><br>\n                      <span style=\"color:#555;\">\n                        {{ (new Date($json.end.dateTime) - new Date($json.start.dateTime)) / 60000 }} minutos\n                      </span>\n                    </div>\n\n                  </td>\n                </tr>\n              </table>\n            </td>\n          </tr>\n\n          <!-- ADD TO GOOGLE CALENDAR -->\n          <tr>\n            <td align=\"center\" style=\"padding-bottom:32px;\">\n              <a href=\"https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cita+en+Tornasol+Bienestar&dates={{ $json.start.dateTime.replace(/[-:]/g,'').split('+')[0] }}/{{ $json.end.dateTime.replace(/[-:]/g,'').split('+')[0] }}&details=Servicio%3A+{{ $json.summary.split(' - ')[0] }}&location=Calle+Castelló+31+1º+izquierda%2C+Salamanca%2C+Madrid\"\n                 target=\"_blank\"\n                 style=\"background:#f0e8dc; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 26px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                📅 Añadir a Google Calendar\n              </a>\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- MAP -->\n          <tr>\n            <td style=\"padding:0 0 10px; text-align:left;\">\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\" style=\"width:100%; border-radius:12px; display:block; border:0;\">\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Calle Castelló 31, 1º izquierda, Salamanca, Madrid</strong><br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\" style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:26px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CÓMO LLEGAR -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:26px; text-align:left;\">\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              Las paradas de metro más cercanas son <strong>Velázquez (L4)</strong> y\n              <strong>Príncipe de Vergara (L2/L9)</strong>, a pocos minutos a pie.<br><br>\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas SER en la zona y parkings públicos cercanos.\n              Te recomendamos llegar con un poco de antelación.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CONTACTO -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:22px; text-align:left;\">\n              ¿Necesitas modificar o cancelar tu cita? Contáctanos con antelación y lo gestionamos sin problema.\n            </td>\n          </tr>\n\n          <!-- BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n              <span style=\"display:inline-block; width:10px;\"></span>\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20consulta%20sobre%20mi%20cita%20en%20Tornasol.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px;\n                       text-align:center; font-style:italic;\n                       border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Con cariño, <strong style=\"color:#2c1a0e;\">Teresa Figueroa</strong> · Terapeuta de bienestar<br><br>\n              <span style=\"color:#aaa;\">Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com</span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.2,
+        "position": [
+          1056,
+          -96
+        ],
+        "id": "c1323623-3c7a-41f9-8796-7a7bbd44bb6a",
+        "name": "Send a message",
+        "webhookId": "82ce4242-40f6-4f28-b028-3b156a3dc686",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "ryxHkzomci5whSBU",
+            "name": "tornasol"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "f88aa1a8-313c-4b20-905f-018a8baf1399",
+                "leftValue": "={{ $('Stripe Trigger').item.json.data.object.billing_details.phone }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          384,
+          -192
+        ],
+        "id": "a1e4759a-ec54-490e-ae2f-c9d9290eb0ed",
+        "name": "If",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Hoja 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id": "={{ $json.id }}",
+              "telefono": "={{ $('If').item.json.telefono }}",
+              "correo": "={{ $('If').item.json.correo }}",
+              "fecha": "={{ $('If').item.json.fecha }}",
+              "nombre cliente": "={{ $('If').item.json['nombre cliente'] }}",
+              "FUENTE DE LLAMADA": "={{ $('If').item.json['FUENTE DE LLAMADA'] }}",
+              "servicio": "={{ $('If').item.json.servicio }}"
+            },
+            "matchingColumns": [
+              "telefono"
+            ],
+            "schema": [
+              {
+                "id": "id",
+                "displayName": "id",
+                "required": false,
+                "defaultMatch": true,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "telefono",
+                "displayName": "telefono",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "correo",
+                "displayName": "correo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "fecha",
+                "displayName": "fecha",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "nombre cliente",
+                "displayName": "nombre cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "servicio",
+                "displayName": "servicio",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "FUENTE DE LLAMADA",
+                "displayName": "FUENTE DE LLAMADA",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "description",
+                "displayName": "description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "created",
+                "displayName": "created",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "updated",
+                "displayName": "updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "etag",
+                "displayName": "etag",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "eventType",
+                "displayName": "eventType",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "htmlLink",
+                "displayName": "htmlLink",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "iCalUID",
+                "displayName": "iCalUID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "kind",
+                "displayName": "kind",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "reminders",
+                "displayName": "reminders",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "sequence",
+                "displayName": "sequence",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1056,
+          -288
+        ],
+        "id": "b9435225-8649-4dc2-8a70-fdb46ce5c030",
+        "name": "Append or update row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "px0flVbICKq2At2u",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "calendar": {
+            "__rl": true,
+            "value": "tornasolcontacto3@gmail.com",
+            "mode": "list",
+            "cachedResultName": "tornasolcontacto3@gmail.com"
+          },
+          "start": "={{ DateTime.fromFormat($('Get row(s) in sheet').item.json.fecha, 'dd-MM-yyyy HH:mm').toISO() }}",
+          "end": "={{ DateTime.fromFormat($('Get row(s) in sheet').item.json.fecha, 'dd-MM-yyyy HH:mm').plus({ hours: 1 }).toISO() }}",
+          "additionalFields": {
+            "color": "={{ $json.colorId }}",
+            "description": "=👤 CLIENTE\n{{ $json['nombre cliente'] }}\n📞 {{ $json.telefono }}\n✨ SERVICIO\n{{ $json.servicio }}\n🗓️ CITA\n📅 {{ \n  $json.fecha\n    .split('-')\n    .reverse()\n    .join('-')\n}}\n🕒 {{ $json.hora }}\n⏱️ {{ $json.duracion }} minutos",
+            "summary": "={{ $json.servicio }} - {{ $json['nombre cliente'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1.3,
+        "position": [
+          832,
+          -192
+        ],
+        "id": "05352e96-5078-4432-9ed5-15ac19c9f23c",
+        "name": "CREADOR DE CITA",
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "ZwNI01XrsFRnMJdg",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Masaje Zen Vital\": 60,\n  \"Ritual Serena\": 60,\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Masaje Para Parejas\": 60,\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\nconst colores = {\n  \"Masaje Relajante\": \"2\",\n  \"Masaje Ayurveda Relajante\": \"2\",\n  \"Masaje Balsámico\": \"2\",\n  \"Masaje Zen Vital\": \"2\",\n  \"Ritual Serena\": \"2\",\n  \"Masaje Descontracturante\": \"7\",\n  \"Masaje Tailandés Con Aceite\": \"7\",\n  \"Masaje Lomi Lomi\": \"7\",\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"7\",\n  \"Drenaje Linfático Manual\": \"7\",\n  \"Masaje Adelgazante Y Anticelulítico\": \"6\",\n  \"Masajes Para Embarazada\": \"6\",\n  \"Masaje Para Parejas\": \"6\",\n  \"Reflexología\": \"3\",\n  \"Sanación Con Reiki\": \"3\",\n  \"Masaje Facial Japonés Kobido\": \"4\",\n  \"Limpieza De Piel Intensa\": \"4\",\n  \"Limpieza De Piel Premium\": \"4\",\n  \"Dermapen\": \"4\",\n  \"The Glow Session\": \"4\",\n  \"Exoxomas\": \"4\",\n  \"Depilación Ingles Completas (Cera)\": \"5\",\n  \"Ingles Completas Y Medias Piernas\": \"5\"\n};\n\n// ── Leer campos en minúscula, como llegan en el input ──────────\nconst fechaRaw  = input.fecha    || \"\";   // \"19-03-2026 10:00\"\nconst servicioRaw = input.servicio || \"\"; // \"Masaje Ayurveda Relajante\"\n\nif (!fechaRaw) throw new Error(\"Falta el campo 'fecha' en el input\");\n\n// ── Separar fecha y hora del campo combinado ───────────────────\n// Formato esperado: \"DD-MM-YYYY HH:MM\"\nconst partes = fechaRaw.trim().split(\" \");\nif (partes.length < 2) throw new Error(`Formato de fecha inesperado: \"${fechaRaw}\". Esperado: \"DD-MM-YYYY HH:MM\"`);\n\nconst [dia, mes, anio] = partes[0].split(\"-\");\nconst hora = partes[1]; // \"10:00\"\n\n// Google Calendar necesita YYYY-MM-DD\nconst fecha = `${anio}-${mes}-${dia}`; // \"2026-03-19\"\n\n// ── Normalizar nombre del servicio (Title Case) ────────────────\nconst servicio = servicioRaw\n  .split(\" \")\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(\" \");\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio]    || \"1\";\n\n// ── Calcular hora de fin ───────────────────────────────────────\nconst [horas, minutos] = hora.split(\":\").map(Number);\nconst totalMin = horas * 60 + minutos + duracion;\nconst horaFin  = String(Math.floor(totalMin / 60)).padStart(2, \"0\");\nconst minFin   = String(totalMin % 60).padStart(2, \"0\");\n\n// ── Zona horaria España (UTC+1 invierno / +2 verano) ──────────\n// Detectar si estamos en horario de verano (último domingo de marzo → último de octubre)\nfunction esHorarioVerano(dateStr) {\n  const d = new Date(dateStr + \"T12:00:00Z\");\n  const year = d.getUTCFullYear();\n  // Último domingo de marzo\n  const lastSunMar = new Date(Date.UTC(year, 2, 31));\n  lastSunMar.setUTCDate(31 - lastSunMar.getUTCDay());\n  // Último domingo de octubre\n  const lastSunOct = new Date(Date.UTC(year, 9, 31));\n  lastSunOct.setUTCDate(31 - lastSunOct.getUTCDay());\n  return d >= lastSunMar && d < lastSunOct;\n}\n\nconst offset     = esHorarioVerano(fecha) ? \"+02:00\" : \"+01:00\";\nconst start_time = `${fecha}T${hora}:00${offset}`;\nconst end_time   = `${fecha}T${horaFin}:${minFin}:00${offset}`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,        // \"2026-03-19\"  (formato ISO para Google Calendar)\n    hora,         // \"10:00\"\n    servicio,     // normalizado Title Case\n    duracion,     // minutos\n    colorId,\n    start_time,   // \"2026-03-19T10:00:00+01:00\"\n    end_time,     // \"2026-03-19T11:00:00+01:00\"\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          -192
+        ],
+        "id": "2e541d9b-e161-4d2e-a015-36c644960d2b",
+        "name": "Code in JavaScript"
+      }
+    ],
+    "connections": {
+      "Stripe Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get row(s) in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "CREADOR DE CITA": {
+        "main": [
+          [
+            {
+              "node": "Append or update row in sheet",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "CREADOR DE CITA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version 69dd1965",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "69dd1965-474d-4e24-bb53-6e33edd77a84",
+  "connections": {
+    "Stripe Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "CREADOR DE CITA": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "CREADOR DE CITA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-18T15:46:55.443Z",
+  "id": "MCA9HBGTlTyR0LJVfKqqr",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "AGENDA CON STRIPE",
+  "nodes": [
+    {
+      "parameters": {
+        "events": [
+          "charge.succeeded"
+        ]
+      },
+      "type": "n8n-nodes-base.stripeTrigger",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -192
+      ],
+      "id": "7f17e3e4-069e-48fa-9114-d1e0cfd0ffd8",
+      "name": "Stripe Trigger",
+      "webhookId": "ab173881-1be3-4ecf-9f2c-ecbad574bbf3",
+      "credentials": {
+        "stripeApi": {
+          "id": "F3tH9sYL4ufqHY5x",
+          "name": "Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "telefono",
+              "lookupValue": "={{ $json.data.object.billing_details.phone.replaceAll(\"+34\",\"\") }}"
+            },
+            {
+              "lookupColumn": "correo",
+              "lookupValue": "={{ $json.data.object.billing_details.email }}"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        -192
+      ],
+      "id": "f4d45a75-049d-4613-8f4a-3c7f1cf61815",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "47sUFqSzwRggra9R",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "tornasolcontacto3@gmail.com,7nachoo@gmail.com",
+        "subject": "=¡Tu cita está confirmada! {{ $json.summary.split(' - ')[0] }} · {{ $json.start.dateTime.split('T')[0].split('-').reverse().join('-') }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>¡Cita confirmada! · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\" width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\">\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:22px; font-weight:700; color:#2c1a0e; padding-bottom:6px;\n                       text-align:left; letter-spacing:0.3px;\">\n              ¡Te esperamos, {{ $json.summary.split(' - ')[1].split(' ')[0] }}! 🌿\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:26px;\n                       text-align:left; font-style:italic;\">\n              Tu reserva está confirmada y tu plaza asegurada\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:28px; text-align:left;\">\n              Tu cita en <strong>Tornasol Bienestar</strong> está confirmada.<br>\n              A continuación encontrarás todos los detalles de tu reserva:\n            </td>\n          </tr>\n\n          <!-- DETAILS CARD -->\n          <tr>\n            <td style=\"padding-bottom:30px;\">\n              <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n                     style=\"background:#fdf6ee; border-radius:12px; padding:24px; border:1px solid #ede5d8;\">\n                <tr>\n                  <td style=\"font-size:15px; color:#222; line-height:2.1; text-align:left;\">\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                      <span style=\"color:#555;\">{{ $json.summary.split(' - ')[0] }}</span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.start.dateTime.split('T')[0].split('-').reverse().join('-') }}\n                      </span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora de inicio</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.start.dateTime.split('T')[1].substring(0,5) }}\n                      </span>\n                    </div>\n\n                    <div style=\"margin-bottom:12px;\">\n                      <span style=\"font-weight:700; color:#2c1a0e;\">🏁 Hora de fin</span><br>\n                      <span style=\"color:#555;\">\n                        {{ $json.end.dateTime.split('T')[1].substring(0,5) }}\n                      </span>\n                    </div>\n\n                    <div>\n                      <span style=\"font-weight:700; color:#2c1a0e;\">⏱ Duración</span><br>\n                      <span style=\"color:#555;\">\n                        {{ (new Date($json.end.dateTime) - new Date($json.start.dateTime)) / 60000 }} minutos\n                      </span>\n                    </div>\n\n                  </td>\n                </tr>\n              </table>\n            </td>\n          </tr>\n\n          <!-- ADD TO GOOGLE CALENDAR -->\n          <tr>\n            <td align=\"center\" style=\"padding-bottom:32px;\">\n              <a href=\"https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cita+en+Tornasol+Bienestar&dates={{ $json.start.dateTime.replace(/[-:]/g,'').split('+')[0] }}/{{ $json.end.dateTime.replace(/[-:]/g,'').split('+')[0] }}&details=Servicio%3A+{{ $json.summary.split(' - ')[0] }}&location=Calle+Castelló+31+1º+izquierda%2C+Salamanca%2C+Madrid\"\n                 target=\"_blank\"\n                 style=\"background:#f0e8dc; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 26px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                📅 Añadir a Google Calendar\n              </a>\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- MAP -->\n          <tr>\n            <td style=\"padding:0 0 10px; text-align:left;\">\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\" style=\"width:100%; border-radius:12px; display:block; border:0;\">\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Calle Castelló 31, 1º izquierda, Salamanca, Madrid</strong><br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\" style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:26px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CÓMO LLEGAR -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:26px; text-align:left;\">\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              Las paradas de metro más cercanas son <strong>Velázquez (L4)</strong> y\n              <strong>Príncipe de Vergara (L2/L9)</strong>, a pocos minutos a pie.<br><br>\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas SER en la zona y parkings públicos cercanos.\n              Te recomendamos llegar con un poco de antelación.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CONTACTO -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:22px; text-align:left;\">\n              ¿Necesitas modificar o cancelar tu cita? Contáctanos con antelación y lo gestionamos sin problema.\n            </td>\n          </tr>\n\n          <!-- BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n              <span style=\"display:inline-block; width:10px;\"></span>\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20consulta%20sobre%20mi%20cita%20en%20Tornasol.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px;\n                       text-align:center; font-style:italic;\n                       border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Con cariño, <strong style=\"color:#2c1a0e;\">Teresa Figueroa</strong> · Terapeuta de bienestar<br><br>\n              <span style=\"color:#aaa;\">Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com</span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        -96
+      ],
+      "id": "c1323623-3c7a-41f9-8796-7a7bbd44bb6a",
+      "name": "Send a message",
+      "webhookId": "82ce4242-40f6-4f28-b028-3b156a3dc686",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ryxHkzomci5whSBU",
+          "name": "tornasol"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f88aa1a8-313c-4b20-905f-018a8baf1399",
+              "leftValue": "={{ $('Stripe Trigger').item.json.data.object.billing_details.phone }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        384,
+        -192
+      ],
+      "id": "a1e4759a-ec54-490e-ae2f-c9d9290eb0ed",
+      "name": "If",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "telefono": "={{ $('If').item.json.telefono }}",
+            "correo": "={{ $('If').item.json.correo }}",
+            "fecha": "={{ $('If').item.json.fecha }}",
+            "nombre cliente": "={{ $('If').item.json['nombre cliente'] }}",
+            "FUENTE DE LLAMADA": "={{ $('If').item.json['FUENTE DE LLAMADA'] }}",
+            "servicio": "={{ $('If').item.json.servicio }}"
+          },
+          "matchingColumns": [
+            "telefono"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "telefono",
+              "displayName": "telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "correo",
+              "displayName": "correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nombre cliente",
+              "displayName": "nombre cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FUENTE DE LLAMADA",
+              "displayName": "FUENTE DE LLAMADA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created",
+              "displayName": "created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated",
+              "displayName": "updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "etag",
+              "displayName": "etag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "eventType",
+              "displayName": "eventType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "htmlLink",
+              "displayName": "htmlLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "iCalUID",
+              "displayName": "iCalUID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "kind",
+              "displayName": "kind",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "reminders",
+              "displayName": "reminders",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sequence",
+              "displayName": "sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1056,
+        -288
+      ],
+      "id": "b9435225-8649-4dc2-8a70-fdb46ce5c030",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "px0flVbICKq2At2u",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "tornasolcontacto3@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tornasolcontacto3@gmail.com"
+        },
+        "start": "={{ DateTime.fromFormat($('Get row(s) in sheet').item.json.fecha, 'dd-MM-yyyy HH:mm').toISO() }}",
+        "end": "={{ DateTime.fromFormat($('Get row(s) in sheet').item.json.fecha, 'dd-MM-yyyy HH:mm').plus({ hours: 1 }).toISO() }}",
+        "additionalFields": {
+          "color": "={{ $json.colorId }}",
+          "description": "=👤 CLIENTE\n{{ $json['nombre cliente'] }}\n📞 {{ $json.telefono }}\n✨ SERVICIO\n{{ $json.servicio }}\n🗓️ CITA\n📅 {{ \n  $json.fecha\n    .split('-')\n    .reverse()\n    .join('-')\n}}\n🕒 {{ $json.hora }}\n⏱️ {{ $json.duracion }} minutos",
+          "summary": "={{ $json.servicio }} - {{ $json['nombre cliente'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        -192
+      ],
+      "id": "05352e96-5078-4432-9ed5-15ac19c9f23c",
+      "name": "CREADOR DE CITA",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ZwNI01XrsFRnMJdg",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst duraciones = {\n  \"Masaje Relajante\": 60,\n  \"Masaje Ayurveda Relajante\": 60,\n  \"Masaje Balsámico\": 90,\n  \"Masaje Zen Vital\": 60,\n  \"Ritual Serena\": 60,\n  \"Masaje Descontracturante\": 60,\n  \"Masaje Tailandés Con Aceite\": 60,\n  \"Masaje Lomi Lomi\": 60,\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": 60,\n  \"Drenaje Linfático Manual\": 60,\n  \"Masaje Adelgazante Y Anticelulítico\": 60,\n  \"Masajes Para Embarazada\": 60,\n  \"Masaje Para Parejas\": 60,\n  \"Reflexología\": 50,\n  \"Sanación Con Reiki\": 60,\n  \"Masaje Facial Japonés Kobido\": 60,\n  \"Limpieza De Piel Intensa\": 60,\n  \"Limpieza De Piel Premium\": 60,\n  \"Dermapen\": 60,\n  \"The Glow Session\": 90,\n  \"Exoxomas\": 45,\n  \"Depilación Ingles Completas (Cera)\": 30,\n  \"Ingles Completas Y Medias Piernas\": 60\n};\n\nconst colores = {\n  \"Masaje Relajante\": \"2\",\n  \"Masaje Ayurveda Relajante\": \"2\",\n  \"Masaje Balsámico\": \"2\",\n  \"Masaje Zen Vital\": \"2\",\n  \"Ritual Serena\": \"2\",\n  \"Masaje Descontracturante\": \"7\",\n  \"Masaje Tailandés Con Aceite\": \"7\",\n  \"Masaje Lomi Lomi\": \"7\",\n  \"Masaje De Cabeza, Cuello, Hombros Y Espalda\": \"7\",\n  \"Drenaje Linfático Manual\": \"7\",\n  \"Masaje Adelgazante Y Anticelulítico\": \"6\",\n  \"Masajes Para Embarazada\": \"6\",\n  \"Masaje Para Parejas\": \"6\",\n  \"Reflexología\": \"3\",\n  \"Sanación Con Reiki\": \"3\",\n  \"Masaje Facial Japonés Kobido\": \"4\",\n  \"Limpieza De Piel Intensa\": \"4\",\n  \"Limpieza De Piel Premium\": \"4\",\n  \"Dermapen\": \"4\",\n  \"The Glow Session\": \"4\",\n  \"Exoxomas\": \"4\",\n  \"Depilación Ingles Completas (Cera)\": \"5\",\n  \"Ingles Completas Y Medias Piernas\": \"5\"\n};\n\n// ── Leer campos en minúscula, como llegan en el input ──────────\nconst fechaRaw  = input.fecha    || \"\";   // \"19-03-2026 10:00\"\nconst servicioRaw = input.servicio || \"\"; // \"Masaje Ayurveda Relajante\"\n\nif (!fechaRaw) throw new Error(\"Falta el campo 'fecha' en el input\");\n\n// ── Separar fecha y hora del campo combinado ───────────────────\n// Formato esperado: \"DD-MM-YYYY HH:MM\"\nconst partes = fechaRaw.trim().split(\" \");\nif (partes.length < 2) throw new Error(`Formato de fecha inesperado: \"${fechaRaw}\". Esperado: \"DD-MM-YYYY HH:MM\"`);\n\nconst [dia, mes, anio] = partes[0].split(\"-\");\nconst hora = partes[1]; // \"10:00\"\n\n// Google Calendar necesita YYYY-MM-DD\nconst fecha = `${anio}-${mes}-${dia}`; // \"2026-03-19\"\n\n// ── Normalizar nombre del servicio (Title Case) ────────────────\nconst servicio = servicioRaw\n  .split(\" \")\n  .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n  .join(\" \");\n\nconst duracion = duraciones[servicio] || 60;\nconst colorId  = colores[servicio]    || \"1\";\n\n// ── Calcular hora de fin ───────────────────────────────────────\nconst [horas, minutos] = hora.split(\":\").map(Number);\nconst totalMin = horas * 60 + minutos + duracion;\nconst horaFin  = String(Math.floor(totalMin / 60)).padStart(2, \"0\");\nconst minFin   = String(totalMin % 60).padStart(2, \"0\");\n\n// ── Zona horaria España (UTC+1 invierno / +2 verano) ──────────\n// Detectar si estamos en horario de verano (último domingo de marzo → último de octubre)\nfunction esHorarioVerano(dateStr) {\n  const d = new Date(dateStr + \"T12:00:00Z\");\n  const year = d.getUTCFullYear();\n  // Último domingo de marzo\n  const lastSunMar = new Date(Date.UTC(year, 2, 31));\n  lastSunMar.setUTCDate(31 - lastSunMar.getUTCDay());\n  // Último domingo de octubre\n  const lastSunOct = new Date(Date.UTC(year, 9, 31));\n  lastSunOct.setUTCDate(31 - lastSunOct.getUTCDay());\n  return d >= lastSunMar && d < lastSunOct;\n}\n\nconst offset     = esHorarioVerano(fecha) ? \"+02:00\" : \"+01:00\";\nconst start_time = `${fecha}T${hora}:00${offset}`;\nconst end_time   = `${fecha}T${horaFin}:${minFin}:00${offset}`;\n\nreturn [{\n  json: {\n    ...input,\n    fecha,        // \"2026-03-19\"  (formato ISO para Google Calendar)\n    hora,         // \"10:00\"\n    servicio,     // normalizado Title Case\n    duracion,     // minutos\n    colorId,\n    start_time,   // \"2026-03-19T10:00:00+01:00\"\n    end_time,     // \"2026-03-19T11:00:00+01:00\"\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -192
+      ],
+      "id": "2e541d9b-e161-4d2e-a015-36c644960d2b",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-18T15:46:55.450Z",
+      "createdAt": "2026-03-18T15:46:55.450Z",
+      "role": "workflow:owner",
+      "workflowId": "MCA9HBGTlTyR0LJVfKqqr",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-03-18T17:43:59.939Z",
+  "versionId": "8c282bf8-6ef2-4ee6-bfe3-1b24c6bf55cd"
+}
