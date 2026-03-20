@@ -1,0 +1,251 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-20T15:50:33.000Z",
+    "createdAt": "2026-03-20T15:50:30.932Z",
+    "versionId": "6d400239-e640-4e4f-bb6d-43dc6fa882dc",
+    "workflowId": "QsJVsDuSR71PxtPO",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "CORREO"
+              },
+              {
+                "name": "NOMBRE"
+              },
+              {
+                "name": "FECHA"
+              },
+              {
+                "name": "Servicio"
+              }
+            ]
+          }
+        },
+        "id": "189ec53e-8096-46b9-818b-0ba7c7170586",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          272,
+          352
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return items.map(item => {\n\n    // -------- 1. ORIGEN DE DATOS --------\n    const rawNombre_A = item.json.NOMBRE || \"\";\n    const rawFecha_A  = item.json.FECHA || \"\";\n    const rawCorreo_A = item.json.CORREO || \"\";\n\n    const rawSummary_B = item.json.summary || \"\";\n    const rawFecha_B   = item.json.start?.dateTime || item.json.start?.date || \"\";\n    const rawCorreo_B  = item.json.creator?.email || \"\";\n\n    // Priorizar fecha válida de Calendar\n    const rawFecha = rawFecha_B || rawFecha_A || \"\";\n    const rawCorreo = rawCorreo_A || rawCorreo_B || \"\";\n    const rawSummary = rawSummary_B || \"\";\n\n    // -------- 2. LIMPIAR TEXTO --------\n    const clean = t => (t || \"\")\n        .replace(/[\\r\\n\\t]+/g, \" \")\n        .replace(/\\s+/g, \" \")\n        .trim()\n        .toLowerCase();\n\n    const summary = clean(rawSummary);\n\n    // -------- 3. EXTRAER NOMBRE --------\n    let cliente = \"\";\n    let match = summary.match(/cita con (.+?) para/i) \n             || summary.match(/cita con (.+)$/i);\n\n    if (match) cliente = match[1].trim();\n\n    let fuenteNombre = (rawNombre_A || cliente || \"\").trim();\n\n    let nombre = \"\";\n    const partes = fuenteNombre.split(\" \").filter(Boolean);\n    if (partes.length) {\n        nombre = partes[0].charAt(0).toUpperCase() + partes[0].slice(1).toLowerCase();\n    }\n\n    // -------- 4. FECHA / HORA (SEGURA) --------\n    let fecha = \"\";\n    let hora = \"\";\n    let fechaHoraGC = \"\";\n\n    if (rawFecha) {\n        const d = new Date(rawFecha);\n\n        if (!isNaN(d.getTime())) {\n            fechaHoraGC = d.toISOString();\n\n            fecha = new Intl.DateTimeFormat(\"es-ES\", {\n                day: \"2-digit\",\n                month: \"2-digit\",\n                year: \"numeric\",\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            hora = new Intl.DateTimeFormat(\"es-ES\", {\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n        }\n    }\n\n    // -------- 5. SALIDA --------\n    item.json.nombre      = nombre;\n    item.json.fecha       = fecha;\n    item.json.hora        = hora;\n    item.json.correo      = rawCorreo;\n    item.json.fechaHoraGC = fechaHoraGC;\n\n    return item;\n});\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          512,
+          352
+        ],
+        "id": "51b896f3-5ad7-47ff-9ef1-028954b46c9c",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $json.CORREO }}",
+          "subject": "={{ $json.nombre }}, tu reserva ha sido cancelada ❌",
+          "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Cita cancelada · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita ha sido cancelada\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Esperamos verte pronto de nuevo\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $json.nombre }}</strong>,\n              <br><br>\n              Te confirmamos que tu cita en <strong>Tornasol Bienestar</strong> ha sido cancelada correctamente.\n              <br>\n              Si deseas volver a reservar o necesitas cualquier ayuda, estaremos encantadas de atenderte.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:20px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha cancelada</span><br>\n                <span style=\"color:#555;\">{{ $json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $json.hora }}</span>\n              </div>\n\n              <div>\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $json.servicio }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:22px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CTA TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; text-align:left; padding-bottom:20px;\">\n              Si quieres volver a reservar o tienes cualquier duda, puedes contactarnos por teléfono o WhatsApp y te ayudamos enseguida.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding-bottom:28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20me%20gustar%C3%ADa%20volver%20a%20reservar%20una%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 Reservar por WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Tu bienestar siempre tendrá un lugar aquí.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          720,
+          352
+        ],
+        "id": "cdb4f7c0-8196-437a-90d4-8a00d7f63f02",
+        "name": "Send a message",
+        "webhookId": "69ac6182-91bd-41f5-819f-07aac5a157eb",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "ryxHkzomci5whSBU",
+            "name": "tornasol"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version 6d400239",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "6d400239-e640-4e4f-bb6d-43dc6fa882dc",
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-10T16:14:52.497Z",
+  "id": "QsJVsDuSR71PxtPO",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "CITA CANCELADA TORNASOL",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "CORREO"
+            },
+            {
+              "name": "NOMBRE"
+            },
+            {
+              "name": "FECHA"
+            },
+            {
+              "name": "Servicio"
+            }
+          ]
+        }
+      },
+      "id": "189ec53e-8096-46b9-818b-0ba7c7170586",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n    // -------- 1. ORIGEN DE DATOS --------\n    const rawNombre_A = item.json.NOMBRE || \"\";\n    const rawFecha_A  = item.json.FECHA || \"\";\n    const rawCorreo_A = item.json.CORREO || \"\";\n\n    const rawSummary_B = item.json.summary || \"\";\n    const rawFecha_B   = item.json.start?.dateTime || item.json.start?.date || \"\";\n    const rawCorreo_B  = item.json.creator?.email || \"\";\n\n    // Priorizar fecha válida de Calendar\n    const rawFecha = rawFecha_B || rawFecha_A || \"\";\n    const rawCorreo = rawCorreo_A || rawCorreo_B || \"\";\n    const rawSummary = rawSummary_B || \"\";\n\n    // -------- 2. LIMPIAR TEXTO --------\n    const clean = t => (t || \"\")\n        .replace(/[\\r\\n\\t]+/g, \" \")\n        .replace(/\\s+/g, \" \")\n        .trim()\n        .toLowerCase();\n\n    const summary = clean(rawSummary);\n\n    // -------- 3. EXTRAER NOMBRE --------\n    let cliente = \"\";\n    let match = summary.match(/cita con (.+?) para/i) \n             || summary.match(/cita con (.+)$/i);\n\n    if (match) cliente = match[1].trim();\n\n    let fuenteNombre = (rawNombre_A || cliente || \"\").trim();\n\n    let nombre = \"\";\n    const partes = fuenteNombre.split(\" \").filter(Boolean);\n    if (partes.length) {\n        nombre = partes[0].charAt(0).toUpperCase() + partes[0].slice(1).toLowerCase();\n    }\n\n    // -------- 4. FECHA / HORA (SEGURA) --------\n    let fecha = \"\";\n    let hora = \"\";\n    let fechaHoraGC = \"\";\n\n    if (rawFecha) {\n        const d = new Date(rawFecha);\n\n        if (!isNaN(d.getTime())) {\n            fechaHoraGC = d.toISOString();\n\n            fecha = new Intl.DateTimeFormat(\"es-ES\", {\n                day: \"2-digit\",\n                month: \"2-digit\",\n                year: \"numeric\",\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            hora = new Intl.DateTimeFormat(\"es-ES\", {\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n        }\n    }\n\n    // -------- 5. SALIDA --------\n    item.json.nombre      = nombre;\n    item.json.fecha       = fecha;\n    item.json.hora        = hora;\n    item.json.correo      = rawCorreo;\n    item.json.fechaHoraGC = fechaHoraGC;\n\n    return item;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        352
+      ],
+      "id": "51b896f3-5ad7-47ff-9ef1-028954b46c9c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.CORREO }}",
+        "subject": "={{ $json.nombre }}, tu reserva ha sido cancelada ❌",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Cita cancelada · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita ha sido cancelada\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Esperamos verte pronto de nuevo\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $json.nombre }}</strong>,\n              <br><br>\n              Te confirmamos que tu cita en <strong>Tornasol Bienestar</strong> ha sido cancelada correctamente.\n              <br>\n              Si deseas volver a reservar o necesitas cualquier ayuda, estaremos encantadas de atenderte.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:20px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha cancelada</span><br>\n                <span style=\"color:#555;\">{{ $json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $json.hora }}</span>\n              </div>\n\n              <div>\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $json.servicio }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:22px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- CTA TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; text-align:left; padding-bottom:20px;\">\n              Si quieres volver a reservar o tienes cualquier duda, puedes contactarnos por teléfono o WhatsApp y te ayudamos enseguida.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding-bottom:28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20me%20gustar%C3%ADa%20volver%20a%20reservar%20una%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 Reservar por WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Tu bienestar siempre tendrá un lugar aquí.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        352
+      ],
+      "id": "cdb4f7c0-8196-437a-90d4-8a00d7f63f02",
+      "name": "Send a message",
+      "webhookId": "69ac6182-91bd-41f5-819f-07aac5a157eb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ryxHkzomci5whSBU",
+          "name": "tornasol"
+        }
+      }
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "CORREO": "",
+          "NOMBRE": "Laura Martínez",
+          "FECHA": "20-03-2026 10:00"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-10T16:14:52.500Z",
+      "createdAt": "2026-03-10T16:14:52.500Z",
+      "role": "workflow:owner",
+      "workflowId": "QsJVsDuSR71PxtPO",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-20T17:14:07.547Z",
+  "versionId": "6d400239-e640-4e4f-bb6d-43dc6fa882dc"
+}
