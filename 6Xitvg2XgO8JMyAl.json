@@ -1,0 +1,2275 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Date & Time2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time2": {
+      "main": [
+        [
+          {
+            "node": "Date & Time3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time3": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Redis6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis2": {
+      "main": [
+        [
+          {
+            "node": "Redis4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis3": {
+      "main": [
+        [
+          {
+            "node": "Redis2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis6": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Redis7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria1": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Soporte1": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TOOL DISPONIBILIDAD": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TOOL REAGENDAR": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TOOL AGENDAR": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TOOL CANCELAR": {
+      "ai_tool": [
+        [
+          {
+            "node": "TORNASOL",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TORNASOL": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-13T15:17:43.188Z",
+  "id": "6Xitvg2XgO8JMyAl",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "AGENTE DE IA many Tornasol",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        6016,
+        1648
+      ],
+      "id": "958a93b5-e18a-46e0-8528-07e22cee6ecd",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"respuesta\": []\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        6144,
+        1648
+      ],
+      "id": "2348384f-cde5-4b3f-8649-842b54428363",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# LLM Chain Prompt — WhatsApp JSON Splitter (La Tinta)\n\n## 🎯 ROL PRINCIPAL\n\nTu función es procesar el texto recibido en la siguiente variable:\n`{{ $json.output }}`\n\nDebes devolver **ÚNICAMENTE** una salida:\n\n- **Un JSON válido** (parseable con `JSON.parse()`), con un array `respuesta[]` de strings.\n\n> Caso especial: si el input es **solo un emoji** (ignorando espacios o saltos de línea), devuelve un JSON con **un solo elemento** en `respuesta[]` que sea ese emoji.\n\n---\n\n## 🧠 MISIÓN (IMPORTANTE)\n\nActúas como especialista en comunicación para WhatsApp Business.\n\nTu tarea es **dividir el contenido en mensajes** respetando:\n1) el separador `[[MSG]]` (si aparece),\n2) y la regla estricta de **URLs de imagen aisladas**.\n\n❌ **NO debes incluir ni devolver mensajes de bienvenida/introductorio.**\n- Si detectas un “mensaje de bienvenida”, “saludo inicial”, “introducción” o texto similar, **debes eliminarlo del output**.\n- Solo devuelve los segmentos relevantes posteriores (los mensajes reales y/o imágenes).\n\nNo resumas ni reinterpretés el contenido restante.\n\n---\n\n## 🚨 REGLA CRÍTICA: SEPARADOR [[MSG]]\n\nEl input puede contener el marcador `[[MSG]]` como separador de mensajes.\n\n**OBLIGATORIO:**\n1. Cuando encuentres `[[MSG]]`, úsalo para **DIVIDIR** el contenido.\n2. Cada segmento entre `[[MSG]]` = **1 elemento** separado en el array `respuesta[]`.\n3. **ELIMINAR** completamente `[[MSG]]` del output final (NO debe aparecer en el JSON).\n4. Recorta espacios y saltos de línea sobrantes al inicio/fin de cada segmento.\n\n**Ejemplo:**\nInput: `\"Hola!\\n\\n[[MSG]]\\n\\nhttps://img.com/foto.jpg\\n\\n[[MSG]]\\n\\n¿Qué necesitas?\"`\nOutput: `{\"respuesta\":[\"Hola!\",\"https://img.com/foto.jpg\",\"¿Qué necesitas?\"]}`\n\n---\n\n## 🖼️ IMÁGENES (REGLAS ESTRICTAS)\n\nSe considera imagen toda URL que termine en:\n`.jpg`, `.jpeg`, `.png`, `.webp`, `.gif` (con o sin query params)\n\n**Reglas obligatorias:**\n- Cada URL de imagen debe ir **completamente sola**\n- Debe ocupar **un elemento exclusivo** del array\n- Nunca se mezcla con texto\n- Nunca se elimina ni se modifica\n\nSi en un mismo segmento (por `[[MSG]]`) hay texto + URL de imagen:\n- Separalos en 2 elementos distintos (primero el texto, luego la URL de imagen, o manteniendo el orden original).\n\n---\n\n## 🧾 FORMATO DE SALIDA (OBLIGATORIO)\n\nLa salida debe ser **únicamente** este JSON plano:\n\n```json\n{\n  \"respuesta\": [\n    \"string\",\n    \"https://sitio.com/imagen.jpg\",\n    \"string\"\n  ]\n}\n",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        6000,
+        1424
+      ],
+      "id": "7214be48-2e35-4e56-aace-a3409c73b355",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "5001cd3b-d7e0-4e04-8681-6ff728d2dde2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        64,
+        1280
+      ],
+      "id": "fc9ee1f4-e97e-48aa-9b09-4002f091ccaf",
+      "name": "Webhook1",
+      "webhookId": "5001cd3b-d7e0-4e04-8681-6ff728d2dde2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "82c8b9ea-ce22-4df8-9694-0e5b75a62d13",
+              "leftValue": "={{ $json.output.replaceAll(\"/n\",\"\") }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5dcdaba7-a688-4561-b4c4-e421302db8b4",
+              "leftValue": "={{ /^(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})$/u.test($json.output?.trim()) }}",
+              "rightValue": "={{ /^(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})$/u.test($json.output?.trim()) }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5776,
+        1280
+      ],
+      "id": "4e6ee7ed-3e82-40d9-8c1e-726e9ffedc8c",
+      "name": "If4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        6064,
+        1136
+      ],
+      "id": "5e382dd3-85d0-4fe6-94f4-911f602d1dd1",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.manychat.com/fb/subscriber/getInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "subscriber_id",
+              "value": "={{ $json.body[\"ID del usuario\"] }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3449241:fb4ed59a8a076da6b2c62ce681940f06"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        288,
+        1280
+      ],
+      "id": "dd286be6-63e1-4d05-a129-3c0b7c964e03",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88125383-00ef-4006-83e0-cbbaebebd359",
+              "leftValue": "={{ ($json.data.tags || []).some(tag => tag.name === 'soporte') ? 1 : 0 }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        1280
+      ],
+      "id": "a4451d68-7cc0-454e-840b-95f2e51dc5f9",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}",
+        "messageData": "={{ $json.text }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2528,
+        1280
+      ],
+      "id": "fca48789-c0cc-4614-ab30-2edb67894ba7",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2752,
+        1280
+      ],
+      "id": "616aa168-b71b-478b-bf87-4d23f9e381e4",
+      "name": "Wait",
+      "webhookId": "7a8038d1-1ee2-4bef-8f81-4a163a98816f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "mensajes",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2976,
+        1280
+      ],
+      "id": "6d2653c9-7cfd-4d91-8916-ce47e787e70c",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Edit Fields').item.json.contact_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4096,
+        1280
+      ],
+      "id": "3d916fc6-0794-4327-b2a8-b13d7fed0ec4",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "smmKeXBAm3E0yg6J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "mensaje"
+            },
+            {
+              "fieldToAggregate": "fecha"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        4320,
+        1280
+      ],
+      "id": "858c3eda-d4ec-4df5-9916-badc502e384c",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fae6a726-13be-4e5d-84ec-28b61287d036",
+              "leftValue": "={{ $('Redis1').item.json.mensajes[0] }}",
+              "rightValue": "={{ $('Redis').item.json.text }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3200,
+        1280
+      ],
+      "id": "051685e9-f09e-4c15-b5ca-ce17e2548357",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "818ea328-a8b2-47bc-a6a6-29a2e9d46157",
+              "name": "mensaje",
+              "value": "={{ $json.mensajes.join('/n') }}",
+              "type": "string"
+            },
+            {
+              "id": "2e1265ad-b59a-4043-a446-462593d14dd4",
+              "name": "contact_id",
+              "value": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}",
+              "type": "string"
+            },
+            {
+              "id": "4164e4ec-ada5-4368-a59a-fb508405439b",
+              "name": "time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3424,
+        1280
+      ],
+      "id": "2d1664db-a54c-4676-92b0-c21f614fc4f7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "addToDate",
+        "magnitude": "={{ $json.time }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        3648,
+        1280
+      ],
+      "id": "ba16baa3-c500-4172-9b70-d622ac9a2d17",
+      "name": "Date & Time2"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.newDate }}",
+        "format": "MMMM dd yyyy",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        3872,
+        1280
+      ],
+      "id": "3588f04f-cd89-4eb3-b1be-703b35bb3e58",
+      "name": "Date & Time3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3449241:fb4ed59a8a076da6b2c62ce681940f06"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\":{{ $('Webhook1').item.json.body[\"ID del usuario\"] }},\n  \"fields\": [\n    {\n      \"field_id\":{{ $json.campo }} ,\n      \"field_value\": \"{{ $('Loop Over Items').item.json[\"output.respuesta\"] }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1408,
+        864
+      ],
+      "id": "61c87bdd-7e93-498e-9faa-656c0257cd1b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/addTag",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3449241:fb4ed59a8a076da6b2c62ce681940f06"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subscriber_id",
+              "value": "={{ $('Webhook1').item.json.body[\"ID del usuario\"] }}"
+            },
+            {
+              "name": "tag_id",
+              "value": "79995384"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        6576,
+        1424
+      ],
+      "id": "f80d26c4-aa04-4d07-a5a9-f271ad91a39a",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Devuelve 1 item con el body listo para ManyChat\n\nconst subscriberId = $input.first().json?.subscriber_id\n  ?? $node[\"Webhook1\"]?.json?.body?.[\"ID del usuario\"]\n  ?? $node[\"Webhook1\"]?.json?.body?.[\"ID del usuario\"]\n  ?? null;\n\nif (!subscriberId) {\n  throw new Error(\"No encuentro subscriber_id. Revisá Webhook1.body['ID del usuario'] o pasalo por input.\");\n}\n\nconst respuestas = $input.first().json?.output?.respuesta\n  ?? $node[\"Basic LLM Chain1\"]?.json?.output?.respuesta\n  ?? [];\n\nconst fieldMap = [\n  12531357, // [0]\n  12531358, // [1]\n  12531359, // [2]\n  14116939, // [3]\n  14116941, // [4]\n  14116942, // [5]\n  14116960, // [6]\n  14131051, // [7]\n  14131052, // [8]\n  14131055, // [9]\n  14131056, // [10]\n  14131057  // [11]\n];\n\nconst fields = (Array.isArray(respuestas) ? respuestas : [])\n  .map((value, index) => {\n    if (!fieldMap[index]) return null;\n    if (value === null || value === undefined) return null;\n\n    const v = String(value).trim();\n    if (!v) return null;\n\n    return { field_id: fieldMap[index], field_value: v };\n  })\n  .filter(Boolean);\n\nreturn [\n  {\n    json: {\n      subscriber_id: subscriberId,\n      fields\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        1760
+      ],
+      "id": "c93d1ec8-585b-4452-8d19-0ee2cc5d4589",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.respuesta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        64,
+        784
+      ],
+      "id": "3ac3be0f-18b4-449f-a3b3-3503f21bae24",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        288,
+        784
+      ],
+      "id": "447da92a-c163-4b97-839a-9bb7560e952f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}mensajes",
+        "value": "=={{ String(($json.mensajes ?? 0) + 1) }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        736,
+        784
+      ],
+      "id": "21da7b2e-cace-4340-805a-6ae34c2b8d0e",
+      "name": "Redis2",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "mensajes",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}mensajes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        512,
+        784
+      ],
+      "id": "3da3ee36-ddb8-49a1-acf8-ef15cee21562",
+      "name": "Redis3",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7e4192e8-95f3-449d-9aec-6525cdd4d79f",
+              "name": "campo",
+              "value": "={{\n  (() => {\n    const ids = [\n      12531357, // response_part1 -> index 0\n      12531358, // response_part2\n      12531359,\n      14116939,\n      14116941,\n      14116942,\n      14116960,\n      14131051,\n      14131052,\n      14131055,\n      14131056,\n      14131057  // response_part12 -> index 11\n    ];\n\n    const value = String($json.mensajes ?? '');\n\n    // contar SOLO los \"1\", ignorando \"=\" u otros caracteres\n    const countOnes = (value.match(/1/g) || []).length;\n\n    // si no hay 1s, no devuelve nada (podés cambiarlo si querés)\n    if (countOnes === 0) return null;\n\n    // devolver el id correspondiente (1 → index 0, 2 → index 1, etc.)\n    return ids[countOnes - 1] ?? null;\n  })()\n}}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        784
+      ],
+      "id": "9e366c66-abe2-486c-8bbe-69b5b44e538d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "mensajes",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}mensajes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        960,
+        784
+      ],
+      "id": "fd7debc4-f781-478b-bbd5-4f3420262a29",
+      "name": "Redis4",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}mensajes"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        512,
+        592
+      ],
+      "id": "9029d383-f0b3-460d-a48d-69134ec25ed8",
+      "name": "Redis6",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        736,
+        592
+      ],
+      "id": "fbcb1f4b-2699-47d8-b428-48160ad66e8a",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3449241:fb4ed59a8a076da6b2c62ce681940f06"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\nJSON.stringify((() => {\n  const subscriberId =\n    $('Webhook1')?.item?.json?.body?.['ID del usuario']\n    ?? $('Webhook1')?.first()?.json?.body?.['ID del usuario']\n    ?? $json?.subscriber_id\n    ?? null;\n\n  const respuestas =\n    $json?.output?.respuesta\n    ?? $('Basic LLM Chain1')?.item?.json?.output?.respuesta\n    ?? $('Basic LLM Chain1')?.first()?.json?.output?.respuesta\n    ?? [];\n\n  const fieldMap = [\n    14211072,14211073,14211074,14211076,14211077,14211078,\n    14211080,14211081,14211083,14211084,14211085,14211086\n  ];\n\n  const fields = (Array.isArray(respuestas) ? respuestas : [])\n    .map((v, i) => {\n      const field_id = fieldMap[i];\n      if (!field_id) return null;\n      if (v === null || v === undefined) return null;\n      const s = String(v).trim();\n      if (!s) return null;\n      return { field_id, field_value: s };\n    })\n    .filter(Boolean);\n\n  return { subscriber_id: subscriberId, fields };\n})(), null, 2)\n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        6352,
+        1424
+      ],
+      "id": "c9d90fe5-a4f1-433f-a113-8b935f005f70",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "url": "https://api.manychat.com/fb/page/getTags",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3449241:fb4ed59a8a076da6b2c62ce681940f06"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        64,
+        368
+      ],
+      "id": "140901ad-d07a-4bec-b56a-942d5f224843",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/removeTag",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 636984:b92b2c180699cbc5d482fbce7ea17092"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subscriber_id",
+              "value": "={{ $('Webhook1').item.json.body[\"ID del usuario\"] }}"
+            },
+            {
+              "name": "tag_id",
+              "value": "79602229"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "c9b7fecb-9ad2-4f86-8dc3-2ac3665166b3",
+      "name": "HTTP Request6",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Webhook1').item.json.body[\"ID del usuario\"].toString() }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        6800,
+        1424
+      ],
+      "id": "24414f48-e407-4b02-8556-a33d8c44a0cf",
+      "name": "Redis7",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=213052050"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        64,
+        1984
+      ],
+      "id": "553ed7ca-4fbc-43af-8f91-42ccb17a5c3f",
+      "name": "Redis8",
+      "credentials": {
+        "redis": {
+          "id": "n8YbhaVWiZsXKv31",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "jpeg",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "4629d7d0-03a7-4641-bc21-c8d598fdbc2f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "imagen"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5f7cc1cf-9d1a-4c44-80f4-86eafe79be77",
+                    "leftValue": "={{ $json.mimeType }}",
+                    "rightValue": "jpeg",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "AUDIO"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1632,
+        1184
+      ],
+      "id": "f24cca1d-6ff7-4467-955c-db5096560265",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Haz una descripcipon lo más detallada posible de la imágen que recibes",
+        "inputType": "base64",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2080,
+        1280
+      ],
+      "id": "97c0ed37-b7ed-427e-b354-9ab38fcbdc4a",
+      "name": "Analyze image",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2304,
+        1088
+      ],
+      "id": "e0d5b816-00e3-424d-9927-9c43e3cb634c",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a800be78-5d25-4024-ab0f-aa5f4fbd8ce8",
+              "name": "text",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2304,
+        1280
+      ],
+      "id": "16652f9f-a978-4b5f-8caa-7e59d2e639d9",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "58f95e0e-01f0-4626-ad9e-135b799e7627",
+              "name": "audio",
+              "value": "={{ $json.mediaUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1856,
+        1088
+      ],
+      "id": "84a73d21-3856-4423-80fc-e528adc24a3b",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db4a6eeb-b1f1-44a0-9507-5a35f6227996",
+              "name": "text",
+              "value": "={{ $('Webhook1').item.json.body['Respuesta definitiva'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2304,
+        1472
+      ],
+      "id": "4ca191b1-03d7-450e-8eff-9c58850bd5da",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.audio }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        1088
+      ],
+      "id": "eb30aa39-e3c4-4546-8850-dcd9c5832383",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "302341d2-a21a-4f7f-9861-2ff4ccbf45d1",
+              "leftValue": "={{ $('Webhook1').item.json.body[\"Respuesta definitiva\"] }}",
+              "rightValue": "https://lookaside",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        1280
+      ],
+      "id": "06757e90-d03c-4008-bbe0-447ce65e4b53",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Webhook1').item.json.body['Respuesta definitiva'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        960,
+        1184
+      ],
+      "id": "b2faae7e-9d3d-4131-8e8d-dfff1cffda33",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b5e03a95-bcd9-4ad0-8f2e-0d001e1cfb74",
+              "name": "URL",
+              "value": "={{$binary.data}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        1184
+      ],
+      "id": "bc8e5fea-d0ae-4c12-aa55-ddb03112f7f6",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recorremos todos los items\nfor (const item of $input.all()) {\n\n  // El campo URL es un string JSON\n  const raw = item.json.URL;\n\n  if (!raw) {\n    continue;\n  }\n\n  let parsed;\n\n  try {\n    parsed = JSON.parse(raw);\n  } catch (e) {\n    throw new Error('El campo URL no es un JSON válido');\n  }\n\n  // Extraemos y normalizamos campos\n  item.json.mimeType = parsed.mimeType || null;\n  item.json.fileType = parsed.fileType || null;\n  item.json.fileExtension = parsed.fileExtension || null;\n  item.json.fileName = parsed.fileName || null;\n  item.json.fileSize = parsed.fileSize || null;\n\n  // Esta es la URL REAL del archivo\n  item.json.mediaUrl = parsed.directory || null;\n}\n\n// Devolvemos los items modificados\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        1184
+      ],
+      "id": "ccf4db5a-d88d-435f-a996-e96a67bce397",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Webhook1').item.json.body['Respuesta definitiva'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1856,
+        1280
+      ],
+      "id": "4b994411-f3ad-4c9a-8c89-ffc4f424def1",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        64,
+        144
+      ],
+      "id": "f7358f12-a6a8-46f5-8f87-a4190ee37da4",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.manychat.com/fb/page/getTags",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer TU_API_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        288,
+        144
+      ],
+      "id": "ca18a25a-3620-4fb3-a8c0-b9412a76a579",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "url": "https://api.manychat.com/fb/page/getCustomFields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer TU_API_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        144
+      ],
+      "id": "272ab484-1619-4594-9520-9f9bc915d080",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "content": "## OBTENER LOS CAMPOS NECESARIOS PRAA HACER FUNCIONAR E SISTEMA",
+        "width": 1040
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        672,
+        32
+      ],
+      "id": "0d44c0de-57b4-4bd6-89a5-5fe1ee01d294",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "description": "Usa esta herramienta para guardar cualquier dato relevante de la conversación que debas recordar para el siguiente turno, como el nombre, edad o tratamiento deseado del paciente. También úsala para anotar de forma clara en lenguaje natural lo que ocurrió, cuál es el estado actual de la conversación y qué debería pasar a continuación. Escribe solo una frase o párrafo simple, sin formato ni listas, como si dejaras una nota en una libreta.\n\nEjemplo:  \nEl paciente dijo que quiere agendar una valoración para All-on-4. Ya tiene claro el precio. Próximo paso: pedirle su nombre.",
+        "workflowId": {
+          "__rl": true,
+          "value": "pIoqAHVa74gK0vj3",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/pIoqAHVa74gK0vj3",
+          "cachedResultName": "Herramienta memoria"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "whatsapp": "={{ $('If1').last().json.propertyName }}",
+            "memorianueva": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('memorianueva', `siempre string`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "whatsapp",
+              "displayName": "whatsapp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "memorianueva",
+              "displayName": "memorianueva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        4928,
+        1504
+      ],
+      "id": "ae55e33d-4370-4fd2-814a-bdd37d9a3842",
+      "name": "Memoria1"
+    },
+    {
+      "parameters": {
+        "description": "Activa esta herramienta para derivar a soporte humano",
+        "workflowId": {
+          "__rl": true,
+          "value": "dT59HFyo9Z1N0QZq",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/dT59HFyo9Z1N0QZq",
+          "cachedResultName": "SOPORTE"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        5056,
+        1504
+      ],
+      "id": "1221359b-49e7-482b-a865-f5fc3661d7c6",
+      "name": "Soporte1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=12345",
+        "tableName": "Naturalvya"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        4800,
+        1504
+      ],
+      "id": "5be0f9af-bb37-4960-bbac-a5c195c5df80",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "smmKeXBAm3E0yg6J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        4672,
+        1504
+      ],
+      "id": "d8a22c49-667e-4bd7-aeaa-cd0fb4178cae",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "UQcGPYi3Z98uEyaq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        4544,
+        1504
+      ],
+      "id": "396239d9-f06a-4997-a348-f5c7b9393175",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "A1lktaB0DtY8Fp3x",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/A1lktaB0DtY8Fp3x",
+          "cachedResultName": "TOOL DISPONIBILIDAD TORNASOL"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha', `Fecha que elija el cliente\n`, 'string') }}",
+            "Hora": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Hora', `Hora elegida por el cliente`, 'string') }}",
+            "Duracion": "={{ $fromAI('Duracion', 'Duración del servicio en minutos. Masaje Relajante=60, Masaje Descontracturante=60, Masaje Ayurveda Relajante=60, Masaje Tailandés con Aceite=60, Masaje de Cabeza Cuello Hombros y Espalda=60, Masaje Lomi Lomi=60, Masaje Adelgazante y Anticelulítico=60, Masajes para Embarazada=60, Drenaje Linfático Manual=60, Masaje Zen Vital=60, Reflexología=50, Masaje Balsámico=90, Ritual Serena=60, Masaje para Parejas=60, Sanación con Reiki=60, Masaje Facial Japonés Kobido=60, Limpieza de Piel Intensa=60, Limpieza de Piel Premium=60, Dermapen=60, The Glow Session=90, Exoxomas=45, Depilación Ingles Completas=30, Ingles Completas y Medias Piernas=60', 'string') }}"
+          },
+          "matchingColumns": [
+            "Fecha"
+          ],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Duracion",
+              "displayName": "Duracion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        5184,
+        1504
+      ],
+      "id": "bd2d7afe-315d-41f8-be98-6dfacdd589e0",
+      "name": "TOOL DISPONIBILIDAD"
+    },
+    {
+      "parameters": {
+        "description": "=Usa esta herramienta cuando el cliente quiera cambiar, mover o modificar una cita existente. Se activa cuando el cliente dice frases como \"quiero cambiar mi cita\", \"necesito mover la reserva\", \"¿puedo cambiar el día?\". Requiere: teléfono del cliente, fecha nueva (YYYY-MM-DD), hora nueva (HH:mm), fecha anterior (YYYY-MM-DD) y hora anterior (HH:mm). Llama a esta herramienta solo cuando tengas TODOS estos datos confirmados por el cliente.",
+        "workflowId": {
+          "__rl": true,
+          "value": "uxWh85cJJmezyzVg",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/uxWh85cJJmezyzVg",
+          "cachedResultName": "TOOL REAGENDAR"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Telefono": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Telefono', `Telefono del cliente`, 'string') }}",
+            "Fecha nueva": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha_nueva', `Fecha nueva del cliente`, 'string') }}",
+            "Hora nueva": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Hora_nueva', `Hora nueva del cliente`, 'string') }}",
+            "Fecha anterior": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha_anterior', `Fecha anterior del cliente`, 'string') }}",
+            "Hora anterior": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Hora_anterior', `Hora anterior del cliente`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Telefono",
+              "displayName": "Telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Fecha nueva",
+              "displayName": "Fecha nueva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Hora nueva",
+              "displayName": "Hora nueva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Fecha anterior",
+              "displayName": "Fecha anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Hora anterior",
+              "displayName": "Hora anterior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        5312,
+        1504
+      ],
+      "id": "8c6a6b14-e6ac-4760-b6eb-d5d623257d31",
+      "name": "TOOL REAGENDAR"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "pXLFOF5zn7egc1ol",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/pXLFOF5zn7egc1ol",
+          "cachedResultName": "TOOL AGENDAR"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NOMBRE": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('NOMBRE', ``, 'string') }}",
+            "TELEFONO": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TELEFONO', ``, 'string') }}",
+            "CORREO": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('CORREO', ``, 'string') }}",
+            "Servicio": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Servicio', ``, 'string') }}",
+            "Fecha": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Fecha', ``, 'string') }}",
+            "Hora": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Hora', ``, 'string') }}",
+            "Notas": "={{ \n  $fromAI(\n    $('Aggregate1').item.json.mensaje,\n    'Extrae solo observaciones relevantes del cliente clasificables como: estado de la piel, urgencia o prisa, sensibilidad o dolor, dudas de precio, preferencias de especialista o advertencias importantes. Devuelve frases cortas separadas por punto y coma. No inventes.',\n    'string'\n  ) \n}}\n",
+            "ID CRM": "={{ $('If1').last().json.propertyName }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "NOMBRE",
+              "displayName": "NOMBRE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "TELEFONO",
+              "displayName": "TELEFONO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "CORREO",
+              "displayName": "CORREO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Servicio",
+              "displayName": "Servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Notas",
+              "displayName": "Notas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "ID CRM",
+              "displayName": "ID CRM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        5440,
+        1504
+      ],
+      "id": "6331d605-c90a-457e-99e0-e4814a365130",
+      "name": "TOOL AGENDAR"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('AI Agent1').last().json.output }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=# 🧠 PROMPT MAESTRO — Raquel\n**Tornasol Bienestar · tornasolbienestar.com · WhatsApp · Madrid**\nVersión Producción v2026.6 — ANTI-SOLAPAMIENTO\n\n---\n\n## 0) SISTEMA\n\nZona horaria: Europe/Madrid\nFecha actual: {{ $now.toISODate() }}\nHora actual: {{ $now.toFormat('HH:mm') }}\n\n**Reglas de tiempo:**\n- Nunca reservar citas con menos de 15 minutos desde ahora\n- Formato herramientas → YYYY-MM-DD / HH:mm\n- Formato chat → \"el viernes 20\", \"a las 17:30\"\n\n---\n\n## 1) QUIÉN ERES\n\nEres **Raquel**, recepcionista de **Tornasol Bienestar**.\nCentro de bienestar y masajes · Calle Castelló 31, 1º izquierda · Barrio Salamanca · Madrid\nTerapeuta: **Teresa Figueroa** · Tel: +34 640 80 27 14 · tornasolbienestar.com\n\n**Tu misión:** Reservar · Reagendar · Cancelar · Resolver · Cerrar. Sin fricción.\n\nTienes autoridad total. Nunca consultas, nunca dudas, nunca generas espera.\n\n---\n\n## 2) LENGUAJE Y AUTORIDAD\n\n**Prohibido decir:** \"Te lo confirmo\" · \"Lo consulto\" · \"Un segundito\" · \"Te aviso\" · \"Estoy esperando\" · \"Puedo comprobarlo\" · \"No tengo el precio\"\n\n**Reglas de precio:**\n- Si preguntan precio → la primera frase es el precio\n- Si preguntan precio sin decir el servicio → primero pregunta qué servicio\n- Nunca asumas un servicio por defecto\n\n**Reglas de respuesta:**\n- Responde todo en un solo mensaje. Nunca dividas ni crees estados pendientes\n- Si el cliente dice \"quedo a la espera\" → responde inmediatamente con el dato\n\n---\n\n## 3) CATÁLOGO DE SERVICIOS\n\n### Masajes Corporales\n| Servicio | Min | Precio |\n|---|---|---|\n| Masaje Relajante | 60 | 50 € |\n| Masaje Descontracturante | 60 | 60 € |\n| Masaje Ayurveda Relajante | 60 | 65 € |\n| Masaje Tailandés con Aceite | 60 | 59,90 € |\n| Masaje de Cabeza, Cuello, Hombros y Espalda | 60 | 60 € |\n| Masaje Lomi Lomi | 60 | 60 € |\n| Masaje Adelgazante y Anticelulítico | 60 | 60 € |\n| Masajes para Embarazada | 60 | 60 € |\n| Drenaje Linfático Manual | 60 | 60 € |\n| Masaje Zen Vital | 60 | 100 € |\n\n### Rituales y Experiencias\n| Servicio | Min | Precio |\n|---|---|---|\n| Reflexología | 50 | 59,90 € |\n| Masaje Balsámico (Thai + Kobido + Reflexología) | 90 | Consultar |\n| Ritual Serena | 60 | 111 € |\n| Masaje para Parejas | 60 | 115 € |\n| Sanación con Reiki | 60 | Consultar |\n\n### Faciales y Estética\n| Servicio | Min | Precio |\n|---|---|---|\n| Masaje Facial Japonés Kobido | 60 | 65 € |\n| Limpieza de Piel Intensa | 60 | 60 € |\n| Limpieza de Piel Premium | 60 | 70 € |\n| Dermapen | 60 | 75 € |\n| The Glow Session | 90 | 75 € |\n| Exoxomas | 45 | 140 € |\n\n### Depilación\n| Servicio | Min | Precio |\n|---|---|---|\n| Depilación Ingles Completas (cera) | 30 | 25 € |\n| Ingles Completas + Medias Piernas | 60 | 45 € |\n\n**Gift Cards** disponibles en tornasolbienestar.com/gift-card\nCita previa obligatoria para todos los servicios.\n\n---\n\n## 4) HORARIO DEL CENTRO\n\n| Día | Abre | Cierra |\n|---|---|---|\n| Lunes–Viernes | 10:00 | 21:00 |\n| Sábado | 12:00 | 20:00 |\n| Domingo | 12:00 | 19:00 |\n\n**Regla crítica:** el servicio debe terminar ANTES o EN el cierre.\n- Servicio 90 min → no puede empezar después de las 19:30 (lunes-viernes)\n- Servicio 60 min → no puede empezar después de las 20:00 (lunes-viernes)\n- Servicio 60 min → no puede empezar después de las 19:00 (sábado)\n- Nunca ofrecer huecos fuera del rango horario del día\n\n---\n\n## 5) DISPONIBILIDAD Y ANTI-SOLAPAMIENTO\n\nSolo hay 1 terapeuta (Teresa). **Solo puede atender 1 cliente a la vez.**\n\n### Proceso OBLIGATORIO antes de reservar:\n\n**PASO 1 — Conocer el servicio primero**\nAntes de consultar disponibilidad, debes saber qué servicio quiere el cliente.\nSin servicio → no puedes saber la duración → no puedes verificar el hueco.\n\n**PASO 2 — Llamar a `comprobar_disponibilidad`**\nLlama SIEMPRE con estos tres datos:\n- `Fecha` → YYYY-MM-DD\n- `Hora` → HH:mm\n- `Duracion` → minutos exactos del servicio\n\nLa herramienta devuelve si ese bloque concreto está libre o ocupado.\n\n**PASO 3 — Interpretar la respuesta**\n- Si disponible → confirma ese hueco y avanza al cierre\n- Si ocupado → llama de nuevo con otros horarios del día y ofrece 4–5 huecos verificados\n\n**PASO 4 — NUNCA reservar sin verificar**\n🚫 Nunca ejecutes `reservar_cita` sin haber llamado antes a `comprobar_disponibilidad`\n🚫 Nunca ofrezcas un hueco que no hayas verificado con la herramienta\n🚫 Nunca asumas que un horario está libre porque \"parece\" libre\n### 🚫 REGLA DE BLOQUEO ABSOLUTO — UN HUECO = UNA CITA\n\nTornasol tiene **1 sola terapeuta**. Un bloque horario ocupado está ocupado para \nTODOS los servicios, sin excepción.\n\n- Si `comprobar_disponibilidad` devuelve \"ocupado\" para Fecha + Hora → \n  ESE HUECO NO EXISTE para ningún otro cliente ni servicio\n- Nunca ejecutes `reservar_cita` en un bloque que ya devolvió \"ocupado\", \n  aunque el servicio sea diferente\n- Si llegas al paso de reservar y no tienes un \"disponible\" explícito de la \n  herramienta para ese bloque concreto → DETENTE y busca alternativa.\n\n### Lógica de huecos consecutivos:\nLos huecos deben encadenarse exactamente según la duración del servicio:\n- Cita 10:00 (60 min) → siguiente posible: 11:00 (no 11:30)\n- Cita 10:00 (50 min) → siguiente posible: 10:50\n- Cita 10:00 (45 min) → siguiente posible: 10:45\n- Cita 10:00 (90 min) → siguiente posible: 11:30\n\n**Objetivo:** maximizar citas al día sin gaps muertos.\n\n### Al presentar huecos al cliente:\n- Máximo 5 opciones distribuidas mañana/tarde\n- Todos verificados con `comprobar_disponibilidad`\n- Si el cliente pide un horario concreto → verifica ese primero\n\n---\n\n## 6) FLUJOS DE GESTIÓN\n\n### 🟢 FLUJO A — RESERVAR\n\n**Pasos en orden estricto:**\n1. Preguntar día preferido\n2. Preguntar qué servicio quiere (si no lo ha dicho)\n3. Llamar a `comprobar_disponibilidad` con Fecha + Hora + Duracion\n4. Si libre → confirmar servicio + día + hora con el cliente\n5. Pedir nombre completo + teléfono\n6. Ejecutar `reservar_cita`\n7. Enviar confirmación + link Stripe + cierre\n\n**Datos obligatorios antes de ejecutar `reservar_cita`:**\nServicio · Fecha futura · Hora verificada como libre · Nombre · Apellido · Teléfono\n\n**Restricciones:**\n- Nunca reservar sin nombre completo\n- El teléfono puede llegar en cualquier formato: \"612 345 678\", \"612345678\", \"+34612345678\", \"+34 612 345 678\" → trátalo siempre como el mismo número, normalizando internamente sin espacios ni prefijo +34\n- Nunca reservar en pasado ni menos de 15 min desde ahora\n- Nunca reservar sin verificar disponibilidad primero\n- Si hueco ocupado → verificar alternativas y ofrecer huecos reales\n\n**Mensaje de cierre:**\n> \"Tu cita está confirmada 😊\n> • [Servicio] — [Precio]\n> • [Día], a las [Hora]\n> • Castelló 31, 1º izquierda\n>\n> Para completar la reserva, paga aquí 👇\n> [Link Stripe del servicio]\n>\n> Una vez pagado, queda 100% confirmada.\"\n\n---\n\n### 🔵 FLUJO B — REAGENDAR\n\n**Pasos:**\n1. Pedir teléfono\n2. Ejecutar `buscar_cita` → confirmar la cita encontrada\n3. Preguntar nuevo día/hora\n4. Llamar a `comprobar_disponibilidad` con nuevo Fecha + Hora + Duracion del servicio original\n5. Si libre → pedir confirmación al cliente\n6. Ejecutar `reagendar_cita`\n7. Confirmar cambio + cierre\n\n**Datos necesarios:** Teléfono (cualquier formato: con/sin espacios, con/sin +34) · Fecha nueva (YYYY-MM-DD) · Hora nueva (HH:mm) · Fecha anterior · Hora anterior\n\n**Si el hueco pedido está ocupado:** ofrecer 2–3 alternativas verificadas cercanas.\n\n**Mensaje de cierre:**\n> \"Listo, tu cita ha quedado cambiada 😊\n> • Antes: [día anterior], [hora anterior]\n> • Ahora: [día nuevo], [hora nueva]\n> Te esperamos. ¡Hasta luego!\"\n\n---\n\n### 🔴 FLUJO C — CANCELAR\n\n**Pasos:**\n1. Pedir teléfono\n2. Ejecutar `buscar_cita` → confirmar la cita\n3. Ofrecer reagendar UNA sola vez: \"¿Prefieres otro hueco o cancelamos definitivamente?\"\n4. Si cancela → ejecutar `cancelar_cita`\n5. Confirmar cancelación + cierre\n\nSi el cliente fue claro desde el inicio → no insistir. Respetar su decisión.\n\n**Mensaje de cierre:**\n> \"Tu cita ha quedado cancelada 😊\n> Cuando quieras volver, aquí estaremos.\n> ¡Hasta luego!\"\n\n**Si acepta reagendar:** → continuar por FLUJO B desde el paso 3.\n\n---\n\n## 7) LINKS DE PAGO (STRIPE)\n\nIncluir siempre tras confirmar una reserva nueva. Nunca antes. Nunca el link equivocado.\n\n| Servicio | Link |\n|---|---|\n| Masaje Zen Vital | https://buy.stripe.com/test_7sY3cu9dUgDDdEbb6yd7q00 |\n| Masaje Ayurveda Relajante | https://buy.stripe.com/test_00w28qeye733fMj0rUd7q01 |\n| Masaje Descontracturante | https://buy.stripe.com/test_eVq00i89Q1IJ2Zx2A2d7q02 |\n| Masaje Balsámico | https://buy.stripe.com/test_bJe8wO1Ls877gQngqSd7q03 |\n| Masaje Tailandés con Aceite | https://buy.stripe.com/test_aFa00i2Pw5YZ2ZxdeGd7q04 |\n| Reflexología | https://buy.stripe.com/test_14A8wOahYgDDfMjfmOd7q05 |\n| Masaje de Cabeza, Cuello, Hombros y Espalda | https://buy.stripe.com/test_28E00i75Mcnn7fNb6yd7q06 |\n| Ritual Serena | https://buy.stripe.com/test_28E4gy1LsbjJ0Rp0rUd7q07 |\n| Masaje Relajante | https://buy.stripe.com/test_aFa28q2Pwaff6bJ3E6d7q08 |\n| Masajes para Embarazada | https://buy.stripe.com/test_6oUbJ0cq69bb9nVdeGd7q09 |\n| Masaje Adelgazante y Anticelulítico | https://buy.stripe.com/test_14A6oG4XE0EFarZgqSd7q0a |\n| Masaje Lomi Lomi | https://buy.stripe.com/test_9B6aEWbm22MN8jR6Qid7q0b |\n| Masaje Facial Japonés Kobido | https://buy.stripe.com/test_3cI5kCcq6evv0Rp1vYd7q0c |\n| Limpieza de Piel Intensa | https://buy.stripe.com/test_3cI5kCdua1IJ9nVdeGd7q0d |\n| Limpieza de Piel Premium | https://buy.stripe.com/test_bJe8wOahY73343BfmOd7q0e |\n| Dermapen | https://buy.stripe.com/test_3cIaEWdua5YZ57FgqSd7q0f |\n| Depilación Ingles Completas (cera) | https://buy.stripe.com/test_8x2cN40Ho0EF43BcaCd7q0g |\n| Ingles Completas y Medias Piernas | https://buy.stripe.com/test_00w6oGcq61IJeIf3E6d7q0h |\n| Masaje para Parejas | https://buy.stripe.com/test_14A00i3TA0EF8jRcaCd7q0i |\n| Drenaje Linfático Manual | https://buy.stripe.com/test_fZuaEW4XE9bb7fN5Med7q0j |\n| Exoxomas | https://buy.stripe.com/test_6oU9AS2PwfzzdEb1vYd7q0k |\n| Sanación con Reiki | https://buy.stripe.com/test_dRmdR875M4UV8jRb6yd7q0l |\n| The Glow Session | https://buy.stripe.com/test_8x29AS9dUfzz8jRcaCd7q0m |\n\nSi el servicio no está en la tabla → no menciones el pago.\n\n---\n\n## 8) OBJECIONES Y MÁRGENES\n\n**Estructura:** validar miedo → margen ideal vs aceptable → no garantizar 0 riesgo → seguridad → cerrar.\nNunca médico · Nunca alarmista · Nunca ambiguo.\n\n**Márgenes:**\n- Masajes: rojez leve 30–90 min. Ideal 4–6h antes de evento. Mínimo 3h.\n- Dermapen / Exoxomas: rojez 24–48h. No indicado antes de evento importante.\n- Limpieza de piel: rojez leve 2–4h. Ideal 48h antes de evento.\n\n---\n\n## 9) POST-CONFIRMACIÓN\n\nGestión completada → no pedir datos, no reformular, no repetir precio ni fecha, no preguntar \"¿Necesitas algo más?\".\n\nSi el cliente dice \"gracias\" o \"nos vemos\" tras el link de pago → máximo 4 palabras o silencio.\nNunca repetir el resumen tras el cierre.\n\nPermitido: responder dudas nuevas concretas o iniciar otro flujo si el cliente lo pide explícitamente.\n\n---\n\n## 10) ANTIBUCLE\n\nSi el cliente insiste tras confirmar → cierre claro + 3 bullets resumen + seguridad + despedida. Luego STOP.\nSi objeción ya respondida → \"Está todo correcto.\" Nada más.\nSi cliente amenaza con irse → confirmar + resolver + seguridad + cierre. Sin preguntar ni justificar.\n\n---\n\n## 11) APAGADO TOTAL\n\nTras la despedida → STOP ABSOLUTO.\n\nNo responder a: \"Hasta luego\" · \"Chao\" · \"Ok\" · \"Gracias\" · \"👍\" · silencio · mensajes de una sola palabra o cortesía.\n\nÚnica excepción: pregunta nueva y concreta → iniciar nuevo flujo desde cero.\n\nRegla de oro: si dudas si responder → NO respondas.\n\n---\n\n## 12) TONO\n\nEspañol de España · Cercano · Profesional · Seguro · Máximo 2 emojis por mensaje.\nSin tecnicismos. Sin repetición."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        4992,
+        1280
+      ],
+      "id": "b609c1f3-3eac-47f5-881d-c85c643d2b61",
+      "name": "TORNASOL"
+    },
+    {
+      "parameters": {
+        "description": "Usa esta herramienta ÚNICAMENTE cuando el cliente quiera cancelar o anular su cita definitivamente. Se activa cuando el cliente dice frases como \"quiero cancelar mi cita\", \"necesito anular la reserva\", \"canceladme la cita\". Requiere únicamente el teléfono del cliente. NO uses esta herramienta para cambiar o mover citas — para eso usa TOOL REAGENDAR.",
+        "workflowId": {
+          "__rl": true,
+          "value": "uA5t9Yv8TwkPyx7N",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/uA5t9Yv8TwkPyx7N",
+          "cachedResultName": "TOOL CANCELAR TORNASOL"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefono": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('telefono', `Número de teléfono del cliente`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "telefono",
+              "displayName": "telefono",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "correo",
+              "displayName": "correo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        5568,
+        1504
+      ],
+      "id": "b92e3690-440f-4a02-b68f-87152ed716f6",
+      "name": "TOOL CANCELAR"
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {
+    "Webhook1": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-n8n.j07cwu.easypanel.host",
+            "user-agent": "ManyChat",
+            "content-length": "90",
+            "content-type": "application/json",
+            "x-forwarded-for": "3.74.158.122",
+            "x-forwarded-host": "n8n-n8n.j07cwu.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "840b329c6662",
+            "x-real-ip": "3.74.158.122",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "Respuesta definitiva": "hola",
+            "ID del usuario": 656321690,
+            "Identificador": 1
+          },
+          "webhookUrl": "https://n8n-n8n.j07cwu.easypanel.host/webhook/conversacionmexkommozonafit",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-13T15:17:43.193Z",
+      "createdAt": "2026-03-13T15:17:43.193Z",
+      "role": "workflow:owner",
+      "workflowId": "6Xitvg2XgO8JMyAl",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-18T16:41:44.115Z",
+  "versionId": "a2c94208-0572-4729-854b-24f9f49a9118"
+}
