@@ -1,0 +1,734 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-18T18:05:14.000Z",
+    "createdAt": "2026-03-18T18:00:38.760Z",
+    "versionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1",
+    "workflowId": "A1lktaB0DtY8Fp3x",
+    "nodes": [
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e738fe69-17dd-4d9a-b890-fe08cb319959",
+                "name": "response",
+                "value": "={{ $('OpenAI2').first().json.message.content }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ba39331e-e69b-472c-9088-1285a7707f05",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2864,
+          64
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "calendar",
+          "calendar": {
+            "__rl": true,
+            "value": "tornasolcontacto3@gmail.com",
+            "mode": "list",
+            "cachedResultName": "tornasolcontacto3@gmail.com"
+          },
+          "timeMin": "={{ $fromAI(\"start_time\", \"Fecha y hora de inicio en formato ISO 8601 con zona horaria, ejemplo: 2026-03-20T10:00:00+01:00\") }}",
+          "timeMax": "={{ $fromAI(\"end_time\", \"Fecha y hora de fin en formato ISO 8601 con zona horaria, ejemplo: 2026-03-20T11:00:00+01:00\") }}",
+          "options": {
+            "outputFormat": "bookedSlots"
+          }
+        },
+        "id": "01cac569-8c27-4737-a2e0-dab1e7ae4fb6",
+        "name": "Google Calendar1",
+        "type": "n8n-nodes-base.googleCalendarTool",
+        "typeVersion": 1.2,
+        "position": [
+          2016,
+          288
+        ],
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "ZwNI01XrsFRnMJdg",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Eres un asistente que sugiere huecos alternativos de agenda.\n\nDATOS:\n- Fecha: {{ $('Code').first().json.fecha }}\n- Hora solicitada: {{ $('Code').first().json.hora }}\n- Duración del servicio: {{ $('Code').first().json.duracion }} minutos\n- Estado: {{ $json.ok === true ? 'LIBRE' : 'OCUPADO' }}\n- Bloques ocupados: {{ JSON.stringify($json.huecos_disponibles ?? []) }}\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. Si el estado es LIBRE → responde únicamente: LIBRE\n2. Si el estado es OCUPADO:\n   - Genera huecos empezando desde la apertura del centro ese día\n   - Avanza en intervalos iguales a la duración del servicio\n   - Un hueco es válido si NO se solapa con ningún bloque ocupado:\n     inicio_hueco < fin_bloque AND fin_hueco > inicio_bloque\n   - El servicio debe terminar dentro del horario del centro\n   - Devuelve máximo 5 huecos válidos\n\nSALIDA:\nSi LIBRE → responde: LIBRE\nSi OCUPADO → responde solo horas en formato HH:MM, una por línea.\nSi no hay huecos disponibles → responde: SIN_DISPONIBILIDAD",
+                "role": "system"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "81537ea5-5bf6-4a87-aedc-22b70f9f4d08",
+        "name": "OpenAI1",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.7,
+        "position": [
+          2512,
+          64
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o",
+            "mode": "list",
+            "cachedResultName": "GPT-4O"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Extrae la fecha en la que la persona solicitó ver la disponibilidad horaria de un texto proporcionado y devuelve la fecha en el formato YY-MM-DD.\n\nEsta es la fecha de hoy {{ $now }}\n\nMensaje a analizar:\n{{ $json.query }}\n\n# Steps\n\n1. Lee atentamente el texto proporcionado para identificar cualquier mención de días o fechas.\n2. Busca palabras clave que indiquen una solicitud de disponibilidad horaria.\n3. Identifica la fecha relevante solicitada en el formato mencionado en el texto.\n4. Convierte esa fecha al formato YY-MM-DD.\n\n# Output Format\n\nLa salida debe ser una fecha en el formato YY-MM-DD.\n\n# Examples\n\n**Entrada:** \"Quisiera saber la disponibilidad horaria para el día 25 de diciembre del 2025.\"\n\n**fecha:** 2025-12-25\n\n# Notes\n\n- Presta atención a diferentes formas de expresar fechas, como \"25 de diciembre de 2024\" o \"25/12/2024\".\n- Asegúrate de convertir correctamente el año, mes y día al formato YY-MM-DD.\n-Siempre devuelve el año completo asi 2025 nunca lo devuelvas abreviado como esta forma 25, SIEMPRE DEVUELVE EN FORMATO COMPLETO EL AÑO ASI 2025\n-Nunca puedes inventar la informacion debes devolver siempre la fecha que se te ha enviado en {{ $json.query }}",
+                "role": "system"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {}
+        },
+        "id": "ff811990-9bc1-4ea1-96bf-96f8e4aab9f4",
+        "name": "OpenAI",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.7,
+        "position": [
+          1488,
+          -272
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $input.first().json;\n\n// ── Normalizar campos (vienen con mayúscula del webhook) ──\nconst fechaRaw   = input.Fecha    || input.fecha    || \"\";\nconst horaRaw    = input.Hora     || input.hora     || \"\";\nconst duracionRaw = input.Duracion || input.duracion || 60;\nconst servicio   = input.Servicio || input.servicio || \"\";\n\nif (!fechaRaw || !horaRaw) {\n  throw new Error(`Faltan campos Fecha o Hora. Input recibido: ${JSON.stringify(input)}`);\n}\n\nconst duracion = Number(duracionRaw);\nconst fecha    = fechaRaw.trim();   // \"2026-03-20\"\nconst hora     = horaRaw.trim();    // \"16:00\"\n\n// ── Calcular hora fin ──────────────────────────────────────\nconst [horas, minutos] = hora.split(\":\").map(Number);\nconst totalMin = horas * 60 + minutos + duracion;\nconst horaFin  = String(Math.floor(totalMin / 60)).padStart(2, \"0\");\nconst minFin   = String(totalMin % 60).padStart(2, \"0\");\n\n// ── Zona horaria España ────────────────────────────────────\nfunction esVerano(dateStr) {\n  const d = new Date(dateStr + \"T12:00:00Z\");\n  const y = d.getUTCFullYear();\n  const lastSunMar = new Date(Date.UTC(y, 2, 31));\n  lastSunMar.setUTCDate(31 - lastSunMar.getUTCDay());\n  const lastSunOct = new Date(Date.UTC(y, 9, 31));\n  lastSunOct.setUTCDate(31 - lastSunOct.getUTCDay());\n  return d >= lastSunMar && d < lastSunOct;\n}\n\nconst offset    = esVerano(fecha) ? \"+02:00\" : \"+01:00\";\nconst start_time = `${fecha}T${hora}:00${offset}`;\nconst end_time   = `${fecha}T${horaFin}:${minFin}:00${offset}`;\n\nreturn [{\n  json: {\n    fecha,\n    hora,\n    duracion,\n    hora_fin:  `${horaFin}:${minFin}`,\n    servicio,\n    start:     start_time,\n    end:       end_time,\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1712,
+          64
+        ],
+        "id": "96d353a0-5dbd-42c2-ae50-b93b09b5a3f5",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "modelId": {
+            "__rl": true,
+            "value": "gpt-4o-mini",
+            "mode": "list",
+            "cachedResultName": "GPT-4O-MINI"
+          },
+          "messages": {
+            "values": [
+              {
+                "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = 2026-03-19T10:00:00+01:00 (inicio del día)\n  hasta: 2026-03-19T21:00:00+01:00 (fin del día)\n\nDevuelve únicamente el JSON con estado y bloques."
+              },
+              {
+                "content": "=Eres un asistente que calcula disponibilidad de agenda.\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. DEBES usar obligatoriamente la herramienta Google Calendar antes de responder.\n2. Llama a la tool con start_time = fecha solicitada a las 10:00:00 y end_time = fecha solicitada a las 21:00:00 para obtener TODOS los eventos del día completo, no solo el hueco concreto.\n   - Lunes a Viernes → start: FECHAt10:00:00+01:00 / end: FECHAt21:00:00+01:00\n   - Sábado          → start: FECHAt12:00:00+01:00 / end: FECHAt20:00:00+01:00\n   - Domingo         → start: FECHAt12:00:00+01:00 / end: FECHAt19:00:00+01:00\n3. Una vez obtenidos todos los eventos del día, comprueba solapamiento con el hueco solicitado usando:\n   inicio_solicitado < fin_evento AND fin_solicitado > inicio_evento\n4. Comprueba que el hueco solicitado esté completamente dentro del horario del centro.\n   El servicio debe terminar ANTES o EN el cierre. Si se sale → estado OCUPADO.\n\nREGLAS CRÍTICAS PARA LOS BLOQUES:\n- Lista CADA evento como un bloque independiente en el JSON.\n- NUNCA fusiones eventos consecutivos. 13:00-14:00 y 14:00-15:00 son DOS bloques separados.\n- NUNCA omitas eventos. Si el calendario devuelve 7 eventos → 7 bloques en el array.\n- Copia las horas exactas sin redondear ni modificar.\n- Si response del calendario es [] → no hay eventos → el hueco puede estar libre.\n\nLÓGICA DE DECISIÓN:\n- Si el hueco solicitado NO solapa con ningún bloque Y está dentro del horario → {\"estado\":\"LIBRE\",\"bloques\":[]}\n- Si el hueco solicitado solapa con algún bloque → {\"estado\":\"OCUPADO\",\"bloques\":[...todos los eventos del día...]}\n- Si el hueco solicitado está fuera del horario del centro → {\"estado\":\"OCUPADO\",\"bloques\":[]}\n\nSALIDA:\nResponde ÚNICAMENTE con este JSON, sin texto adicional, sin explicación, sin markdown:\nSi libre:   {\"estado\":\"LIBRE\",\"bloques\":[]}\nSi ocupado: {\"estado\":\"OCUPADO\",\"bloques\":[{\"start\":\"HH:MM\",\"end\":\"HH:MM\"}]}",
+                "role": "system"
+              }
+            ]
+          },
+          "jsonOutput": true,
+          "options": {}
+        },
+        "id": "83a179cf-0025-4161-8f0d-fed3a3b4d753",
+        "name": "OpenAI2",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.7,
+        "position": [
+          1920,
+          64
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.message.content }}",
+          "messages": {
+            "messageValues": [
+              {
+                "message": "=Necesito que de los horarios que vas a recibir solo devuelvas los que estan habilitados en el horario de atencion segun el dia\n\n\nEste es el dia de hoy : {{ $today }}\n\n\nFiltrar solo los horarios dentro de los rangos permitidos:\n\n- **Lunes, Martes y Jueves:** 9:00 a.m. a 6:00 p.m.  \n- **Miércoles y Viernes:** 9:00 a.m. a 11:00 p.m.  \n- **Sábado:** 9:00 a.m. a 2:00 p.m.\n\n### Output\n\nsolo devuelve los espacios permitidos no envies nada mas"
+              }
+            ]
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.5,
+        "position": [
+          1488,
+          496
+        ],
+        "id": "77f5066e-d02e-4bc5-8308-01ac3cfdf90c",
+        "name": "Basic LLM Chain"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4o-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          1568,
+          720
+        ],
+        "id": "a027a564-e5d9-4aeb-acca-374fbb7a2cf4",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "g729OTNpnBux0J4K",
+            "name": "OpenAi account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "Fecha"
+              },
+              {
+                "name": "Hora"
+              },
+              {
+                "name": "Duracion"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          1488,
+          64
+        ],
+        "id": "f0b940bf-1aea-4472-907e-0402e9b58ebd",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "jsCode": "const SCHEDULE = {\n  lunes:     [{ open: \"10:00\", close: \"21:00\" }],\n  martes:    [{ open: \"10:00\", close: \"21:00\" }],\n  miercoles: [{ open: \"10:00\", close: \"21:00\" }],\n  jueves:    [{ open: \"10:00\", close: \"21:00\" }],\n  viernes:   [{ open: \"10:00\", close: \"21:00\" }],\n  sabado:    [{ open: \"12:00\", close: \"20:00\" }],\n  domingo:   [{ open: \"12:00\", close: \"19:00\" }],\n};\n\nfunction timeToMin(t) {\n  const [h, m] = t.split(\":\").map(Number);\n  return h * 60 + m;\n}\n\nfunction minToTime(m) {\n  return `${String(Math.floor(m / 60)).padStart(2, \"0\")}:${String(m % 60).padStart(2, \"0\")}`;\n}\n\nconst DAY_NAMES = [\"domingo\",\"lunes\",\"martes\",\"miercoles\",\"jueves\",\"viernes\",\"sabado\"];\n\n// ── Fuentes: busca entre todos los inputs por contenido ───\nconst allItems   = $input.all();\nconst dataOpenAI = allItems.find(i => i.json?.message?.content?.estado !== undefined)?.json;\nconst dataCita   = allItems.find(i => i.json?.fecha !== undefined)?.json;\n\nif (!dataCita) {\n  return [{ json: { ok: false, error: \"No se encontró el item con fecha/hora/duracion. Items recibidos: \" + JSON.stringify(allItems.map(i => Object.keys(i.json))) } }];\n}\n\nconst fecha      = dataCita.fecha;\nconst horaInicio = dataCita.hora;\nconst duracion   = Number(dataCita.duracion);\nconst servicio   = dataCita.servicio || \"Cita\";\n\nif (!fecha || !horaInicio || !duracion) {\n  return [{ json: { ok: false, error: `Faltan campos. Recibido: fecha=${fecha}, hora=${horaInicio}, duracion=${duracion}` } }];\n}\n\n// ── 1. Validar día y horario ───────────────────────────────\nconst dateObj  = new Date(fecha + \"T00:00:00\");\nconst dayName  = DAY_NAMES[dateObj.getDay()];\nconst daySlots = SCHEDULE[dayName];\n\nif (!daySlots) {\n  return [{ json: { ok: false, error: `El centro está cerrado los ${dayName}s.`, fecha, dia: dayName } }];\n}\n\nconst citaStart = timeToMin(horaInicio);\nconst citaEnd   = citaStart + duracion;\n\nconst dentroDeHorario = daySlots.some(slot =>\n  citaStart >= timeToMin(slot.open) && citaEnd <= timeToMin(slot.close)\n);\n\nif (!dentroDeHorario) {\n  const franjas = daySlots.map(s => `${s.open}–${s.close}`).join(\", \");\n  return [{\n    json: {\n      ok: false,\n      error: `Fuera de horario. Los ${dayName}s abrimos de ${franjas}. Tu cita sería de ${horaInicio} a ${minToTime(citaEnd)}.`,\n      fecha,\n      dia: dayName,\n      horario_del_centro: franjas,\n    }\n  }];\n}\n\n// ── 2. Bloques ocupados desde OpenAI ──────────────────────\nconst bloques = dataOpenAI?.message?.content?.bloques ?? [];\n\nconst busyBlocks = [];\nfor (const b of bloques) {\n  if (b.start && b.end) {\n    busyBlocks.push({\n      start:  timeToMin(b.start),\n      end:    timeToMin(b.end),\n      titulo: b.titulo || b.title || \"Ocupado\",\n    });\n  }\n}\n\nbusyBlocks.sort((a, b) => a.start - b.start);\nconst merged = [];\nfor (const block of busyBlocks) {\n  if (merged.length && block.start < merged[merged.length - 1].end) {\n    merged[merged.length - 1].end = Math.max(merged[merged.length - 1].end, block.end);\n  } else {\n    merged.push({ ...block });\n  }\n}\n\n// ── 3. Comprobar solapamiento ──────────────────────────────\nconst conflicto = merged.find(b => citaStart < b.end && citaEnd > b.start);\n\nif (conflicto) {\n  const huecos = [];\n  for (const slot of daySlots) {\n    const slotStart = timeToMin(slot.open);\n    const slotEnd   = timeToMin(slot.close);\n    let cursor      = slotStart;\n\n    for (const busy of merged) {\n      if (busy.end <= slotStart || busy.start >= slotEnd) continue;\n      const huecoFin = Math.min(busy.start, slotEnd);\n      if (huecoFin - cursor >= duracion) {\n        huecos.push({ desde: minToTime(cursor), hasta: minToTime(huecoFin) });\n      }\n      cursor = Math.max(cursor, busy.end);\n    }\n    if (slotEnd - cursor >= duracion) {\n      huecos.push({ desde: minToTime(cursor), hasta: minToTime(slotEnd) });\n    }\n  }\n\n  return [{\n    json: {\n      ok: false,\n      error: `Ese horario no está disponible. Hay una cita de ${minToTime(conflicto.start)} a ${minToTime(conflicto.end)}.`,\n      fecha,\n      hora_solicitada: `${horaInicio}–${minToTime(citaEnd)}`,\n      huecos_disponibles: huecos.length\n        ? huecos\n        : [{ mensaje: `No hay huecos de ${duracion} min disponibles ese día.` }],\n    }\n  }];\n}\n\n// ── 4. ✅ Todo ok ──────────────────────────────────────────\nreturn [{\n  json: {\n    ok: true,\n    mensaje: `Cita disponible: ${servicio} el ${fecha} de ${horaInicio} a ${minToTime(citaEnd)}.`,\n    fecha,\n    dia: dayName,\n    servicio,\n    hora_inicio:      horaInicio,\n    hora_fin:         minToTime(citaEnd),\n    duracion_minutos: duracion,\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2288,
+          64
+        ],
+        "id": "02fd8f84-1550-4eb2-848c-7dffd016b876",
+        "name": "DISPONIBILIDAD"
+      }
+    ],
+    "connections": {
+      "Google Calendar1": {
+        "ai_tool": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI1": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "OpenAI2",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "DISPONIBILIDAD",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI2": {
+        "main": [
+          [
+            {
+              "node": "DISPONIBILIDAD",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Basic LLM Chain",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DISPONIBILIDAD": {
+        "main": [
+          [
+            {
+              "node": "OpenAI1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version 0d8eec7d",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1",
+  "connections": {
+    "Google Calendar1": {
+      "ai_tool": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DISPONIBILIDAD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "DISPONIBILIDAD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DISPONIBILIDAD": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-13T15:38:07.141Z",
+  "id": "A1lktaB0DtY8Fp3x",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "TOOL DISPONIBILIDAD TORNASOL",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e738fe69-17dd-4d9a-b890-fe08cb319959",
+              "name": "response",
+              "value": "={{ $('OpenAI2').first().json.message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ba39331e-e69b-472c-9088-1285a7707f05",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2864,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "value": "tornasolcontacto3@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tornasolcontacto3@gmail.com"
+        },
+        "timeMin": "={{ $fromAI(\"start_time\", \"Fecha y hora de inicio en formato ISO 8601 con zona horaria, ejemplo: 2026-03-20T10:00:00+01:00\") }}",
+        "timeMax": "={{ $fromAI(\"end_time\", \"Fecha y hora de fin en formato ISO 8601 con zona horaria, ejemplo: 2026-03-20T11:00:00+01:00\") }}",
+        "options": {
+          "outputFormat": "bookedSlots"
+        }
+      },
+      "id": "01cac569-8c27-4737-a2e0-dab1e7ae4fb6",
+      "name": "Google Calendar1",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.2,
+      "position": [
+        2016,
+        288
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ZwNI01XrsFRnMJdg",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Eres un asistente que sugiere huecos alternativos de agenda.\n\nDATOS:\n- Fecha: {{ $('Code').first().json.fecha }}\n- Hora solicitada: {{ $('Code').first().json.hora }}\n- Duración del servicio: {{ $('Code').first().json.duracion }} minutos\n- Estado: {{ $json.ok === true ? 'LIBRE' : 'OCUPADO' }}\n- Bloques ocupados: {{ JSON.stringify($json.huecos_disponibles ?? []) }}\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. Si el estado es LIBRE → responde únicamente: LIBRE\n2. Si el estado es OCUPADO:\n   - Genera huecos empezando desde la apertura del centro ese día\n   - Avanza en intervalos iguales a la duración del servicio\n   - Un hueco es válido si NO se solapa con ningún bloque ocupado:\n     inicio_hueco < fin_bloque AND fin_hueco > inicio_bloque\n   - El servicio debe terminar dentro del horario del centro\n   - Devuelve máximo 5 huecos válidos\n\nSALIDA:\nSi LIBRE → responde: LIBRE\nSi OCUPADO → responde solo horas en formato HH:MM, una por línea.\nSi no hay huecos disponibles → responde: SIN_DISPONIBILIDAD",
+              "role": "system"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "81537ea5-5bf6-4a87-aedc-22b70f9f4d08",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        2512,
+        64
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extrae la fecha en la que la persona solicitó ver la disponibilidad horaria de un texto proporcionado y devuelve la fecha en el formato YY-MM-DD.\n\nEsta es la fecha de hoy {{ $now }}\n\nMensaje a analizar:\n{{ $json.query }}\n\n# Steps\n\n1. Lee atentamente el texto proporcionado para identificar cualquier mención de días o fechas.\n2. Busca palabras clave que indiquen una solicitud de disponibilidad horaria.\n3. Identifica la fecha relevante solicitada en el formato mencionado en el texto.\n4. Convierte esa fecha al formato YY-MM-DD.\n\n# Output Format\n\nLa salida debe ser una fecha en el formato YY-MM-DD.\n\n# Examples\n\n**Entrada:** \"Quisiera saber la disponibilidad horaria para el día 25 de diciembre del 2025.\"\n\n**fecha:** 2025-12-25\n\n# Notes\n\n- Presta atención a diferentes formas de expresar fechas, como \"25 de diciembre de 2024\" o \"25/12/2024\".\n- Asegúrate de convertir correctamente el año, mes y día al formato YY-MM-DD.\n-Siempre devuelve el año completo asi 2025 nunca lo devuelvas abreviado como esta forma 25, SIEMPRE DEVUELVE EN FORMATO COMPLETO EL AÑO ASI 2025\n-Nunca puedes inventar la informacion debes devolver siempre la fecha que se te ha enviado en {{ $json.query }}",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "ff811990-9bc1-4ea1-96bf-96f8e4aab9f4",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1488,
+        -272
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\n// ── Normalizar campos (vienen con mayúscula del webhook) ──\nconst fechaRaw   = input.Fecha    || input.fecha    || \"\";\nconst horaRaw    = input.Hora     || input.hora     || \"\";\nconst duracionRaw = input.Duracion || input.duracion || 60;\nconst servicio   = input.Servicio || input.servicio || \"\";\n\nif (!fechaRaw || !horaRaw) {\n  throw new Error(`Faltan campos Fecha o Hora. Input recibido: ${JSON.stringify(input)}`);\n}\n\nconst duracion = Number(duracionRaw);\nconst fecha    = fechaRaw.trim();   // \"2026-03-20\"\nconst hora     = horaRaw.trim();    // \"16:00\"\n\n// ── Calcular hora fin ──────────────────────────────────────\nconst [horas, minutos] = hora.split(\":\").map(Number);\nconst totalMin = horas * 60 + minutos + duracion;\nconst horaFin  = String(Math.floor(totalMin / 60)).padStart(2, \"0\");\nconst minFin   = String(totalMin % 60).padStart(2, \"0\");\n\n// ── Zona horaria España ────────────────────────────────────\nfunction esVerano(dateStr) {\n  const d = new Date(dateStr + \"T12:00:00Z\");\n  const y = d.getUTCFullYear();\n  const lastSunMar = new Date(Date.UTC(y, 2, 31));\n  lastSunMar.setUTCDate(31 - lastSunMar.getUTCDay());\n  const lastSunOct = new Date(Date.UTC(y, 9, 31));\n  lastSunOct.setUTCDate(31 - lastSunOct.getUTCDay());\n  return d >= lastSunMar && d < lastSunOct;\n}\n\nconst offset    = esVerano(fecha) ? \"+02:00\" : \"+01:00\";\nconst start_time = `${fecha}T${hora}:00${offset}`;\nconst end_time   = `${fecha}T${horaFin}:${minFin}:00${offset}`;\n\nreturn [{\n  json: {\n    fecha,\n    hora,\n    duracion,\n    hora_fin:  `${horaFin}:${minFin}`,\n    servicio,\n    start:     start_time,\n    end:       end_time,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        64
+      ],
+      "id": "96d353a0-5dbd-42c2-ae50-b93b09b5a3f5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = 2026-03-19T10:00:00+01:00 (inicio del día)\n  hasta: 2026-03-19T21:00:00+01:00 (fin del día)\n\nDevuelve únicamente el JSON con estado y bloques."
+            },
+            {
+              "content": "=Eres un asistente que calcula disponibilidad de agenda.\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. DEBES usar obligatoriamente la herramienta Google Calendar antes de responder.\n2. Llama a la tool con start_time = fecha solicitada a las 10:00:00 y end_time = fecha solicitada a las 21:00:00 para obtener TODOS los eventos del día completo, no solo el hueco concreto.\n   - Lunes a Viernes → start: FECHAt10:00:00+01:00 / end: FECHAt21:00:00+01:00\n   - Sábado          → start: FECHAt12:00:00+01:00 / end: FECHAt20:00:00+01:00\n   - Domingo         → start: FECHAt12:00:00+01:00 / end: FECHAt19:00:00+01:00\n3. Una vez obtenidos todos los eventos del día, comprueba solapamiento con el hueco solicitado usando:\n   inicio_solicitado < fin_evento AND fin_solicitado > inicio_evento\n4. Comprueba que el hueco solicitado esté completamente dentro del horario del centro.\n   El servicio debe terminar ANTES o EN el cierre. Si se sale → estado OCUPADO.\n\nREGLAS CRÍTICAS PARA LOS BLOQUES:\n- Lista CADA evento como un bloque independiente en el JSON.\n- NUNCA fusiones eventos consecutivos. 13:00-14:00 y 14:00-15:00 son DOS bloques separados.\n- NUNCA omitas eventos. Si el calendario devuelve 7 eventos → 7 bloques en el array.\n- Copia las horas exactas sin redondear ni modificar.\n- Si response del calendario es [] → no hay eventos → el hueco puede estar libre.\n\nLÓGICA DE DECISIÓN:\n- Si el hueco solicitado NO solapa con ningún bloque Y está dentro del horario → {\"estado\":\"LIBRE\",\"bloques\":[]}\n- Si el hueco solicitado solapa con algún bloque → {\"estado\":\"OCUPADO\",\"bloques\":[...todos los eventos del día...]}\n- Si el hueco solicitado está fuera del horario del centro → {\"estado\":\"OCUPADO\",\"bloques\":[]}\n\nSALIDA:\nResponde ÚNICAMENTE con este JSON, sin texto adicional, sin explicación, sin markdown:\nSi libre:   {\"estado\":\"LIBRE\",\"bloques\":[]}\nSi ocupado: {\"estado\":\"OCUPADO\",\"bloques\":[{\"start\":\"HH:MM\",\"end\":\"HH:MM\"}]}",
+              "role": "system"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "83a179cf-0025-4161-8f0d-fed3a3b4d753",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.7,
+      "position": [
+        1920,
+        64
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.content }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Necesito que de los horarios que vas a recibir solo devuelvas los que estan habilitados en el horario de atencion segun el dia\n\n\nEste es el dia de hoy : {{ $today }}\n\n\nFiltrar solo los horarios dentro de los rangos permitidos:\n\n- **Lunes, Martes y Jueves:** 9:00 a.m. a 6:00 p.m.  \n- **Miércoles y Viernes:** 9:00 a.m. a 11:00 p.m.  \n- **Sábado:** 9:00 a.m. a 2:00 p.m.\n\n### Output\n\nsolo devuelve los espacios permitidos no envies nada mas"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1488,
+        496
+      ],
+      "id": "77f5066e-d02e-4bc5-8308-01ac3cfdf90c",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        720
+      ],
+      "id": "a027a564-e5d9-4aeb-acca-374fbb7a2cf4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "g729OTNpnBux0J4K",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Fecha"
+            },
+            {
+              "name": "Hora"
+            },
+            {
+              "name": "Duracion"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1488,
+        64
+      ],
+      "id": "f0b940bf-1aea-4472-907e-0402e9b58ebd",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const SCHEDULE = {\n  lunes:     [{ open: \"10:00\", close: \"21:00\" }],\n  martes:    [{ open: \"10:00\", close: \"21:00\" }],\n  miercoles: [{ open: \"10:00\", close: \"21:00\" }],\n  jueves:    [{ open: \"10:00\", close: \"21:00\" }],\n  viernes:   [{ open: \"10:00\", close: \"21:00\" }],\n  sabado:    [{ open: \"12:00\", close: \"20:00\" }],\n  domingo:   [{ open: \"12:00\", close: \"19:00\" }],\n};\n\nfunction timeToMin(t) {\n  const [h, m] = t.split(\":\").map(Number);\n  return h * 60 + m;\n}\n\nfunction minToTime(m) {\n  return `${String(Math.floor(m / 60)).padStart(2, \"0\")}:${String(m % 60).padStart(2, \"0\")}`;\n}\n\nconst DAY_NAMES = [\"domingo\",\"lunes\",\"martes\",\"miercoles\",\"jueves\",\"viernes\",\"sabado\"];\n\n// ── Fuentes: busca entre todos los inputs por contenido ───\nconst allItems   = $input.all();\nconst dataOpenAI = allItems.find(i => i.json?.message?.content?.estado !== undefined)?.json;\nconst dataCita   = allItems.find(i => i.json?.fecha !== undefined)?.json;\n\nif (!dataCita) {\n  return [{ json: { ok: false, error: \"No se encontró el item con fecha/hora/duracion. Items recibidos: \" + JSON.stringify(allItems.map(i => Object.keys(i.json))) } }];\n}\n\nconst fecha      = dataCita.fecha;\nconst horaInicio = dataCita.hora;\nconst duracion   = Number(dataCita.duracion);\nconst servicio   = dataCita.servicio || \"Cita\";\n\nif (!fecha || !horaInicio || !duracion) {\n  return [{ json: { ok: false, error: `Faltan campos. Recibido: fecha=${fecha}, hora=${horaInicio}, duracion=${duracion}` } }];\n}\n\n// ── 1. Validar día y horario ───────────────────────────────\nconst dateObj  = new Date(fecha + \"T00:00:00\");\nconst dayName  = DAY_NAMES[dateObj.getDay()];\nconst daySlots = SCHEDULE[dayName];\n\nif (!daySlots) {\n  return [{ json: { ok: false, error: `El centro está cerrado los ${dayName}s.`, fecha, dia: dayName } }];\n}\n\nconst citaStart = timeToMin(horaInicio);\nconst citaEnd   = citaStart + duracion;\n\nconst dentroDeHorario = daySlots.some(slot =>\n  citaStart >= timeToMin(slot.open) && citaEnd <= timeToMin(slot.close)\n);\n\nif (!dentroDeHorario) {\n  const franjas = daySlots.map(s => `${s.open}–${s.close}`).join(\", \");\n  return [{\n    json: {\n      ok: false,\n      error: `Fuera de horario. Los ${dayName}s abrimos de ${franjas}. Tu cita sería de ${horaInicio} a ${minToTime(citaEnd)}.`,\n      fecha,\n      dia: dayName,\n      horario_del_centro: franjas,\n    }\n  }];\n}\n\n// ── 2. Bloques ocupados desde OpenAI ──────────────────────\nconst bloques = dataOpenAI?.message?.content?.bloques ?? [];\n\nconst busyBlocks = [];\nfor (const b of bloques) {\n  if (b.start && b.end) {\n    busyBlocks.push({\n      start:  timeToMin(b.start),\n      end:    timeToMin(b.end),\n      titulo: b.titulo || b.title || \"Ocupado\",\n    });\n  }\n}\n\nbusyBlocks.sort((a, b) => a.start - b.start);\nconst merged = [];\nfor (const block of busyBlocks) {\n  if (merged.length && block.start < merged[merged.length - 1].end) {\n    merged[merged.length - 1].end = Math.max(merged[merged.length - 1].end, block.end);\n  } else {\n    merged.push({ ...block });\n  }\n}\n\n// ── 3. Comprobar solapamiento ──────────────────────────────\nconst conflicto = merged.find(b => citaStart < b.end && citaEnd > b.start);\n\nif (conflicto) {\n  const huecos = [];\n  for (const slot of daySlots) {\n    const slotStart = timeToMin(slot.open);\n    const slotEnd   = timeToMin(slot.close);\n    let cursor      = slotStart;\n\n    for (const busy of merged) {\n      if (busy.end <= slotStart || busy.start >= slotEnd) continue;\n      const huecoFin = Math.min(busy.start, slotEnd);\n      if (huecoFin - cursor >= duracion) {\n        huecos.push({ desde: minToTime(cursor), hasta: minToTime(huecoFin) });\n      }\n      cursor = Math.max(cursor, busy.end);\n    }\n    if (slotEnd - cursor >= duracion) {\n      huecos.push({ desde: minToTime(cursor), hasta: minToTime(slotEnd) });\n    }\n  }\n\n  return [{\n    json: {\n      ok: false,\n      error: `Ese horario no está disponible. Hay una cita de ${minToTime(conflicto.start)} a ${minToTime(conflicto.end)}.`,\n      fecha,\n      hora_solicitada: `${horaInicio}–${minToTime(citaEnd)}`,\n      huecos_disponibles: huecos.length\n        ? huecos\n        : [{ mensaje: `No hay huecos de ${duracion} min disponibles ese día.` }],\n    }\n  }];\n}\n\n// ── 4. ✅ Todo ok ──────────────────────────────────────────\nreturn [{\n  json: {\n    ok: true,\n    mensaje: `Cita disponible: ${servicio} el ${fecha} de ${horaInicio} a ${minToTime(citaEnd)}.`,\n    fecha,\n    dia: dayName,\n    servicio,\n    hora_inicio:      horaInicio,\n    hora_fin:         minToTime(citaEnd),\n    duracion_minutos: duracion,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        64
+      ],
+      "id": "02fd8f84-1550-4eb2-848c-7dffd016b876",
+      "name": "DISPONIBILIDAD"
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-13T15:38:07.145Z",
+      "createdAt": "2026-03-13T15:38:07.145Z",
+      "role": "workflow:owner",
+      "workflowId": "A1lktaB0DtY8Fp3x",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": null,
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-18T18:05:14.259Z",
+  "versionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1"
+}
