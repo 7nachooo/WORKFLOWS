@@ -1,0 +1,784 @@
+{
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2026-03-20T16:35:40.000Z",
+    "createdAt": "2026-03-20T16:34:59.989Z",
+    "versionId": "eca8d29a-40c6-41cb-98c3-7fbd9a48f85b",
+    "workflowId": "E5GlnncN4YljGXGh",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "CORREO"
+              },
+              {
+                "name": "NOMBRE"
+              },
+              {
+                "name": "FECHA"
+              },
+              {
+                "name": "SERVICIO"
+              },
+              {
+                "name": "CalendarID"
+              },
+              {
+                "name": "TELEFONO"
+              }
+            ]
+          }
+        },
+        "id": "4a034531-cdb8-463e-a276-fb80503c6841",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          416,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "return items.map(item => {\n\n    // -------- 1. ORIGEN DE DATOS --------\n    const rawSummary_A  = item.json.NOMBRE;\n    const rawFecha_A    = item.json.FECHA;\n    const rawCorreo_A   = item.json.CORREO;\n    const rawServicio_A = item.json.SERVICIO;\n    const rawTelefono   = item.json.TELEFONO;\n\n    const rawSummary_B  = item.json.summary;\n    const rawFecha_B    = item.json.start?.dateTime;\n    const rawCorreo_B   = item.json.creator?.email;\n\n    const rawSummary = rawSummary_A || rawSummary_B || \"\";\n    const rawFecha   = rawFecha_A   || rawFecha_B   || \"\";\n    const rawCorreo  = rawCorreo_A  || rawCorreo_B  || \"\";\n\n    // -------- 2. LIMPIEZA --------\n    const clean = t => (t || \"\")\n        .replace(/[\\r\\n\\t]+/g, \" \")\n        .replace(/\\s+/g, \" \")\n        .trim();\n\n    const summary = clean(rawSummary);\n\n    // -------- 3. CLIENTE Y SERVICIO --------\n    let cliente  = \"\";\n    let servicio = \"\";\n\n    if (rawServicio_A) {\n        cliente  = clean(rawSummary_A);\n        servicio = clean(rawServicio_A);\n    } else {\n        let matchA = summary.match(/cita con (.+?) para (.+)$/i);\n        let matchB = summary.match(/(.+?)\\s+—\\s+(.+)/);\n\n        if (matchA) {\n            cliente  = matchA[1].trim();\n            servicio = matchA[2].trim();\n        } else if (matchB) {\n            cliente  = matchB[1].trim();\n            servicio = matchB[2].trim();\n        }\n    }\n\n    // -------- 4. NOMBRE + APELLIDO --------\n    let nombre = \"\";\n    let apellido = \"\";\n    let nombreCompleto = \"\";\n\n    if (cliente) {\n        const partes = cliente.split(\" \").filter(Boolean);\n\n        if (partes[0]) {\n            nombre = partes[0][0].toUpperCase() + partes[0].slice(1).toLowerCase();\n        }\n        if (partes[1]) {\n            apellido = partes[1][0].toUpperCase() + partes[1].slice(1).toLowerCase();\n        }\n\n        nombreCompleto = apellido ? `${nombre} ${apellido}` : nombre;\n    }\n\n    // -------- 5. CAPITALIZAR SERVICIO --------\n    const capitalizar = txt =>\n        (txt || \"\")\n            .split(\" \")\n            .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n            .join(\" \");\n\n    const servicioCapitalizado = capitalizar(servicio);\n\n    // -------- 6. FECHA / HORA (Europe/Madrid) --------\n    let fecha            = \"\";\n    let hora             = \"\";\n    let sheets_fecha     = \"\";\n    let sheets_hora      = \"\";\n    let sheets_fecha_fin = \"\";\n    let sheets_hora_fin  = \"\";\n\n    if (rawFecha) {\n        const d = new Date(rawFecha);\n\n        if (!isNaN(d.getTime())) {\n\n            fecha = new Intl.DateTimeFormat(\"es-ES\", {\n                day: \"2-digit\",\n                month: \"2-digit\",\n                year: \"numeric\",\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            hora = new Intl.DateTimeFormat(\"es-ES\", {\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            const startLocalParts = new Intl.DateTimeFormat(\"en-GB\", {\n                year: \"numeric\",\n                month: \"2-digit\",\n                day: \"2-digit\",\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).formatToParts(d);\n\n            const get = t => startLocalParts.find(p => p.type === t)?.value;\n            const pad = n => String(n).padStart(2, \"0\");\n\n            const sy  = get(\"year\");\n            const sm  = get(\"month\");\n            const sd  = get(\"day\");\n            const sh  = get(\"hour\");\n            const smi = get(\"minute\");\n\n            if (sy && sm && sd && sh && smi) {\n                sheets_fecha = `${sd}/${sm}/${sy}`;\n                sheets_hora  = `${sh}:${smi}`;\n\n                const endDate = new Date(`${sy}-${sm}-${sd}T${sh}:${smi}:00`);\n                endDate.setMinutes(endDate.getMinutes() + 60);\n\n                sheets_fecha_fin = `${pad(endDate.getDate())}/${pad(endDate.getMonth()+1)}/${endDate.getFullYear()}`;\n                sheets_hora_fin  = `${pad(endDate.getHours())}:${pad(endDate.getMinutes())}`;\n            }\n        }\n    }\n\n    // -------- 7. SALIDA --------\n    item.json.nombre           = nombre;\n    item.json.apellido         = apellido;\n    item.json.nombreCompleto   = nombreCompleto;\n    item.json.servicio         = servicioCapitalizado;\n    item.json.fecha            = fecha;\n    item.json.hora             = hora;\n    item.json.correo           = rawCorreo;\n    item.json.telefono         = rawTelefono || \"\";\n    item.json.sheets_fecha     = sheets_fecha;\n    item.json.sheets_hora      = sheets_hora;\n    item.json.sheets_fecha_fin = sheets_fecha_fin;\n    item.json.sheets_hora_fin  = sheets_hora_fin;\n\n    return item;\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          640,
+          384
+        ],
+        "id": "b4f8143c-775d-4025-ab52-f3109f4e23fa",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $('Code in JavaScript').item.json.correo }}",
+          "subject": "⏰ ¡Recordatorio de tu cita hoy!",
+          "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Recordatorio de tu cita · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita es hoy 🌿\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Tu momento de bienestar es hoy\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $('Code in JavaScript').item.json.nombre }}</strong>,\n              <br><br>\n              En unas horas te esperamos en <strong>Tornasol Bienestar</strong>.\n              <br>\n              Ve pensando en desconectar — tu espacio de calma está a punto de empezar.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS BLOCK -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:10px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.hora }}</span>\n              </div>\n\n              <div style=\"margin-bottom:4px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.servicio }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- MAP BLOCK -->\n          <tr>\n            <td style=\"padding:24px 0 22px; text-align:left;\">\n\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\"\n                style=\"width:100%; border-radius:12px; display:block; border:0;\"\n              >\n\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Dirección:</strong> Calle Castelló 31, 1º izquierda, Salamanca, Madrid\n                <br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\"\n                   style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- INFO BLOCK -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:18px; text-align:left;\">\n\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              El centro se encuentra en el barrio de Salamanca, muy bien comunicado. Las paradas de metro más cercanas son Velázquez (L4) y Príncipe de Vergara (L2/L9), a pocos minutos a pie.\n              <br><br>\n\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas de estacionamiento SER en la zona y parkings públicos cercanos. Te recomendamos llegar con un poco de antelación.\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:22px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- FOOTER TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:20px; text-align:left;\">\n              Si necesitas modificar o cancelar tu cita, estaremos encantadas de ayudarte por teléfono o WhatsApp.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20consulta%20sobre%20mi%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER FINAL -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          1088,
+          288
+        ],
+        "id": "c13086e2-724c-45a0-aa49-9ce00b3477ac",
+        "name": "EMAIL 2H ANTES",
+        "webhookId": "cfd15e19-c6ec-4d05-a9bb-e019ee713e8f",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "ryxHkzomci5whSBU",
+            "name": "tornasol"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $('Code in JavaScript').item.json.correo }}",
+          "subject": "⏰ ¡Recordatorio de tu cita mañana!",
+          "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Recordatorio de tu cita · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita es mañana ✨\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Recordatorio de tu próxima sesión en Tornasol Bienestar\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $('Code in JavaScript').item.json.nombre }}</strong>,\n              <br><br>\n              Te recordamos que mañana tienes tu cita en <strong>Tornasol Bienestar</strong>.\n              <br>\n              Estamos deseando recibirte y que disfrutes de tu momento de bienestar.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS BLOCK -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:10px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.hora }}</span>\n              </div>\n\n              <div style=\"margin-bottom:4px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.SERVICIO }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- ADD TO GOOGLE CALENDAR -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px 0 32px;\">\n              <a\n                href=\"https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cita+en+Tornasol+Bienestar&dates={{ $('Code in JavaScript').item.json.gc_start }}/{{ $('Code in JavaScript').item.json.gc_end }}&details=Servicio%3A+{{ $('Code in JavaScript').item.json.servicio }}&location=Calle+Castelló+31+1º+izquierda%2C+Salamanca%2C+Madrid\"\n                target=\"_blank\"\n                style=\"background:#f0e8dc; color:#2c1a0e; text-decoration:none;\n                       font-size:14px; font-weight:700; padding:11px 24px;\n                       border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                📅 Añadir a Google Calendar\n              </a>\n            </td>\n          </tr>\n\n          <!-- MAP BLOCK -->\n          <tr>\n            <td style=\"padding:0 0 22px; text-align:left;\">\n\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\"\n                style=\"width:100%; border-radius:12px; display:block; border:0;\"\n              >\n\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Dirección:</strong> Calle Castelló 31, 1º izquierda, Salamanca, Madrid\n                <br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\"\n                   style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- INFO BLOCK -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:18px; text-align:left;\">\n\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              El centro se encuentra en el barrio de Salamanca, muy bien comunicado. Las paradas de metro más cercanas son Velázquez (L4) y Príncipe de Vergara (L2/L9), a pocos minutos a pie.\n              <br><br>\n\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas de estacionamiento SER en la zona y parkings públicos cercanos. Te recomendamos llegar con un poco de antelación.\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:22px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- FOOTER TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:20px; text-align:left;\">\n              Si necesitas modificar o cancelar tu cita, estaremos encantadas de ayudarte por teléfono o WhatsApp.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20duda%20sobre%20mi%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER FINAL -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          1088,
+          480
+        ],
+        "id": "f85dc340-3146-4367-b1e4-74babe1e814e",
+        "name": "EMAIL 24H ANTES",
+        "webhookId": "c1ae4903-d7f8-45aa-9725-f291daeaf07b",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "ryxHkzomci5whSBU",
+            "name": "tornasol"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -32,
+          288
+        ],
+        "id": "258c45fb-8bd1-4755-b57d-61d7b06082bf",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "calendar": {
+            "__rl": true,
+            "value": "tornasolcontacto3@gmail.com",
+            "mode": "list",
+            "cachedResultName": "tornasolcontacto3@gmail.com"
+          },
+          "returnAll": true,
+          "timeMax": "=",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1.3,
+        "position": [
+          192,
+          288
+        ],
+        "id": "3f5b09b6-aa7d-4ba3-9a26-923eef5b8be8",
+        "name": "Get many events",
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "ZwNI01XrsFRnMJdg",
+            "name": "TORNASOL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4f441cb5-32b7-4513-949c-1da02732bcbc",
+                "leftValue": "={{ $json.fechaHoraGC }}",
+                "rightValue": "={{ $now.setZone('Europe/Madrid') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "afterOrEquals"
+                }
+              },
+              {
+                "id": "f2fa1f32-6340-4e90-878b-1e7c95096297",
+                "leftValue": "={{ $json.fechaHoraGC }}",
+                "rightValue": "={{ $now.setZone('Europe/Madrid').plus(2, 'hours') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "before"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          864,
+          288
+        ],
+        "id": "25fccf7a-a575-48df-b7ac-1c2705950308",
+        "name": "Filter"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "1bb58aa3-3168-40b1-87a2-d12eef992383",
+                "leftValue": "={{ $json.fechaHoraGC }}",
+                "rightValue": "={{ $now.setZone('Europe/Madrid') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "afterOrEquals"
+                }
+              },
+              {
+                "id": "1b93fab5-63a1-43d3-97a4-3909663ee92f",
+                "leftValue": "={{ $json.fechaHoraGC }}",
+                "rightValue": "={{ $now.setZone('Europe/Madrid').plus(1, 'day') }}",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "before"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          864,
+          480
+        ],
+        "id": "af56b654-9bfc-43be-ac6b-4527adf48ca6",
+        "name": "Filter1"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/",
+            "mode": "url"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Hoja 1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          416,
+          288
+        ],
+        "id": "708b94dc-985e-40b4-8843-925496394171",
+        "name": "Get row(s) in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "px0flVbICKq2At2u",
+            "name": "TORNASOL"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Filter",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Filter1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get many events",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get many events": {
+        "main": [
+          [
+            {
+              "node": "Get row(s) in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "EMAIL 2H ANTES": {
+        "main": [
+          []
+        ]
+      },
+      "EMAIL 24H ANTES": {
+        "main": [
+          []
+        ]
+      },
+      "Filter": {
+        "main": [
+          [
+            {
+              "node": "EMAIL 2H ANTES",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter1": {
+        "main": [
+          [
+            {
+              "node": "EMAIL 24H ANTES",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Ignacio arcala",
+    "name": "Version eca8d29a",
+    "description": "",
+    "autosaved": true
+  },
+  "activeVersionId": "eca8d29a-40c6-41cb-98c3-7fbd9a48f85b",
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMAIL 2H ANTES": {
+      "main": [
+        []
+      ]
+    },
+    "EMAIL 24H ANTES": {
+      "main": [
+        []
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "EMAIL 2H ANTES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "EMAIL 24H ANTES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-03-10T16:14:27.228Z",
+  "id": "E5GlnncN4YljGXGh",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "RECORDATORIO CITA TORNASOL",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "CORREO"
+            },
+            {
+              "name": "NOMBRE"
+            },
+            {
+              "name": "FECHA"
+            },
+            {
+              "name": "SERVICIO"
+            },
+            {
+              "name": "CalendarID"
+            },
+            {
+              "name": "TELEFONO"
+            }
+          ]
+        }
+      },
+      "id": "4a034531-cdb8-463e-a276-fb80503c6841",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        416,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n    // -------- 1. ORIGEN DE DATOS --------\n    const rawSummary_A  = item.json.NOMBRE;\n    const rawFecha_A    = item.json.FECHA;\n    const rawCorreo_A   = item.json.CORREO;\n    const rawServicio_A = item.json.SERVICIO;\n    const rawTelefono   = item.json.TELEFONO;\n\n    const rawSummary_B  = item.json.summary;\n    const rawFecha_B    = item.json.start?.dateTime;\n    const rawCorreo_B   = item.json.creator?.email;\n\n    const rawSummary = rawSummary_A || rawSummary_B || \"\";\n    const rawFecha   = rawFecha_A   || rawFecha_B   || \"\";\n    const rawCorreo  = rawCorreo_A  || rawCorreo_B  || \"\";\n\n    // -------- 2. LIMPIEZA --------\n    const clean = t => (t || \"\")\n        .replace(/[\\r\\n\\t]+/g, \" \")\n        .replace(/\\s+/g, \" \")\n        .trim();\n\n    const summary = clean(rawSummary);\n\n    // -------- 3. CLIENTE Y SERVICIO --------\n    let cliente  = \"\";\n    let servicio = \"\";\n\n    if (rawServicio_A) {\n        cliente  = clean(rawSummary_A);\n        servicio = clean(rawServicio_A);\n    } else {\n        let matchA = summary.match(/cita con (.+?) para (.+)$/i);\n        let matchB = summary.match(/(.+?)\\s+—\\s+(.+)/);\n\n        if (matchA) {\n            cliente  = matchA[1].trim();\n            servicio = matchA[2].trim();\n        } else if (matchB) {\n            cliente  = matchB[1].trim();\n            servicio = matchB[2].trim();\n        }\n    }\n\n    // -------- 4. NOMBRE + APELLIDO --------\n    let nombre = \"\";\n    let apellido = \"\";\n    let nombreCompleto = \"\";\n\n    if (cliente) {\n        const partes = cliente.split(\" \").filter(Boolean);\n\n        if (partes[0]) {\n            nombre = partes[0][0].toUpperCase() + partes[0].slice(1).toLowerCase();\n        }\n        if (partes[1]) {\n            apellido = partes[1][0].toUpperCase() + partes[1].slice(1).toLowerCase();\n        }\n\n        nombreCompleto = apellido ? `${nombre} ${apellido}` : nombre;\n    }\n\n    // -------- 5. CAPITALIZAR SERVICIO --------\n    const capitalizar = txt =>\n        (txt || \"\")\n            .split(\" \")\n            .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n            .join(\" \");\n\n    const servicioCapitalizado = capitalizar(servicio);\n\n    // -------- 6. FECHA / HORA (Europe/Madrid) --------\n    let fecha            = \"\";\n    let hora             = \"\";\n    let sheets_fecha     = \"\";\n    let sheets_hora      = \"\";\n    let sheets_fecha_fin = \"\";\n    let sheets_hora_fin  = \"\";\n\n    if (rawFecha) {\n        const d = new Date(rawFecha);\n\n        if (!isNaN(d.getTime())) {\n\n            fecha = new Intl.DateTimeFormat(\"es-ES\", {\n                day: \"2-digit\",\n                month: \"2-digit\",\n                year: \"numeric\",\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            hora = new Intl.DateTimeFormat(\"es-ES\", {\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).format(d);\n\n            const startLocalParts = new Intl.DateTimeFormat(\"en-GB\", {\n                year: \"numeric\",\n                month: \"2-digit\",\n                day: \"2-digit\",\n                hour: \"2-digit\",\n                minute: \"2-digit\",\n                hour12: false,\n                timeZone: \"Europe/Madrid\",\n            }).formatToParts(d);\n\n            const get = t => startLocalParts.find(p => p.type === t)?.value;\n            const pad = n => String(n).padStart(2, \"0\");\n\n            const sy  = get(\"year\");\n            const sm  = get(\"month\");\n            const sd  = get(\"day\");\n            const sh  = get(\"hour\");\n            const smi = get(\"minute\");\n\n            if (sy && sm && sd && sh && smi) {\n                sheets_fecha = `${sd}/${sm}/${sy}`;\n                sheets_hora  = `${sh}:${smi}`;\n\n                const endDate = new Date(`${sy}-${sm}-${sd}T${sh}:${smi}:00`);\n                endDate.setMinutes(endDate.getMinutes() + 60);\n\n                sheets_fecha_fin = `${pad(endDate.getDate())}/${pad(endDate.getMonth()+1)}/${endDate.getFullYear()}`;\n                sheets_hora_fin  = `${pad(endDate.getHours())}:${pad(endDate.getMinutes())}`;\n            }\n        }\n    }\n\n    // -------- 7. SALIDA --------\n    item.json.nombre           = nombre;\n    item.json.apellido         = apellido;\n    item.json.nombreCompleto   = nombreCompleto;\n    item.json.servicio         = servicioCapitalizado;\n    item.json.fecha            = fecha;\n    item.json.hora             = hora;\n    item.json.correo           = rawCorreo;\n    item.json.telefono         = rawTelefono || \"\";\n    item.json.sheets_fecha     = sheets_fecha;\n    item.json.sheets_hora      = sheets_hora;\n    item.json.sheets_fecha_fin = sheets_fecha_fin;\n    item.json.sheets_hora_fin  = sheets_hora_fin;\n\n    return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        384
+      ],
+      "id": "b4f8143c-775d-4025-ab52-f3109f4e23fa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Code in JavaScript').item.json.correo }}",
+        "subject": "⏰ ¡Recordatorio de tu cita hoy!",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Recordatorio de tu cita · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita es hoy 🌿\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Tu momento de bienestar es hoy\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $('Code in JavaScript').item.json.nombre }}</strong>,\n              <br><br>\n              En unas horas te esperamos en <strong>Tornasol Bienestar</strong>.\n              <br>\n              Ve pensando en desconectar — tu espacio de calma está a punto de empezar.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS BLOCK -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:10px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.hora }}</span>\n              </div>\n\n              <div style=\"margin-bottom:4px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.servicio }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- MAP BLOCK -->\n          <tr>\n            <td style=\"padding:24px 0 22px; text-align:left;\">\n\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\"\n                style=\"width:100%; border-radius:12px; display:block; border:0;\"\n              >\n\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Dirección:</strong> Calle Castelló 31, 1º izquierda, Salamanca, Madrid\n                <br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\"\n                   style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- INFO BLOCK -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:18px; text-align:left;\">\n\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              El centro se encuentra en el barrio de Salamanca, muy bien comunicado. Las paradas de metro más cercanas son Velázquez (L4) y Príncipe de Vergara (L2/L9), a pocos minutos a pie.\n              <br><br>\n\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas de estacionamiento SER en la zona y parkings públicos cercanos. Te recomendamos llegar con un poco de antelación.\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:22px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- FOOTER TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:20px; text-align:left;\">\n              Si necesitas modificar o cancelar tu cita, estaremos encantadas de ayudarte por teléfono o WhatsApp.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20consulta%20sobre%20mi%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER FINAL -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        288
+      ],
+      "id": "c13086e2-724c-45a0-aa49-9ce00b3477ac",
+      "name": "EMAIL 2H ANTES",
+      "webhookId": "cfd15e19-c6ec-4d05-a9bb-e019ee713e8f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ryxHkzomci5whSBU",
+          "name": "tornasol"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Code in JavaScript').item.json.correo }}",
+        "subject": "⏰ ¡Recordatorio de tu cita mañana!",
+        "message": "=<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Recordatorio de tu cita · Tornasol Bienestar</title>\n</head>\n\n<body style=\"margin:0; padding:0; background:#f5f0eb; font-family:Georgia, 'Times New Roman', serif;\">\n\n  <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"padding:50px 0;\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- CARD -->\n        <table width=\"560\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\n               style=\"background:#fffdf9; border-radius:18px; padding:48px; max-width:560px; box-shadow:0 4px 24px rgba(0,0,0,0.07);\">\n\n          <!-- BRAND -->\n          <tr>\n            <td align=\"left\" style=\"padding-bottom:22px;\">\n              <img\n                src=\"https://static.wixstatic.com/media/ca85b0_47d1fd6910ec40049ef53cf6a305db9a~mv2.png\"\n                alt=\"Tornasol Bienestar\"\n                width=\"130\"\n                style=\"display:block; border:0; outline:none; text-decoration:none;\"\n              >\n            </td>\n          </tr>\n\n          <!-- HEADER -->\n          <tr>\n            <td style=\"font-size:21px; font-weight:700; color:#2c1a0e; padding-bottom:6px; text-align:left; letter-spacing:0.3px;\">\n              Tu cita es mañana ✨\n            </td>\n          </tr>\n\n          <!-- SUBHEADER -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; padding-bottom:22px; text-align:left; font-style:italic;\">\n              Recordatorio de tu próxima sesión en Tornasol Bienestar\n            </td>\n          </tr>\n\n          <!-- GREETING -->\n          <tr>\n            <td style=\"font-size:15px; color:#444; line-height:1.8; padding-bottom:24px; text-align:left;\">\n              Hola <strong style=\"color:#2c1a0e;\">{{ $('Code in JavaScript').item.json.nombre }}</strong>,\n              <br><br>\n              Te recordamos que mañana tienes tu cita en <strong>Tornasol Bienestar</strong>.\n              <br>\n              Estamos deseando recibirte y que disfrutes de tu momento de bienestar.\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding-bottom:26px;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- DETAILS BLOCK -->\n          <tr>\n            <td style=\"font-size:15px; color:#222; line-height:1.9; text-align:left; padding-bottom:10px;\">\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">📅 Fecha</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.fecha }}</span>\n              </div>\n\n              <div style=\"margin-bottom:14px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🕐 Hora</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.hora }}</span>\n              </div>\n\n              <div style=\"margin-bottom:4px;\">\n                <span style=\"font-weight:700; color:#2c1a0e;\">🌿 Servicio</span><br>\n                <span style=\"color:#555;\">{{ $('Code in JavaScript').item.json.SERVICIO }}</span>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- ADD TO GOOGLE CALENDAR -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px 0 32px;\">\n              <a\n                href=\"https://calendar.google.com/calendar/render?action=TEMPLATE&text=Cita+en+Tornasol+Bienestar&dates={{ $('Code in JavaScript').item.json.gc_start }}/{{ $('Code in JavaScript').item.json.gc_end }}&details=Servicio%3A+{{ $('Code in JavaScript').item.json.servicio }}&location=Calle+Castelló+31+1º+izquierda%2C+Salamanca%2C+Madrid\"\n                target=\"_blank\"\n                style=\"background:#f0e8dc; color:#2c1a0e; text-decoration:none;\n                       font-size:14px; font-weight:700; padding:11px 24px;\n                       border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                📅 Añadir a Google Calendar\n              </a>\n            </td>\n          </tr>\n\n          <!-- MAP BLOCK -->\n          <tr>\n            <td style=\"padding:0 0 22px; text-align:left;\">\n\n              <img\n                src=\"https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/pin-l+b07d4f(-3.6833,40.4253)/-3.6833,40.4253,17,0/560x220@2x?access_token=MAPBOX_PUBLIC_TOKEN_PLACEHOLDER\"\n                alt=\"\"\n                style=\"width:100%; border-radius:12px; display:block; border:0;\"\n              >\n\n              <div style=\"font-size:14px; color:#555; margin-top:10px; line-height:1.7;\">\n                📍 <strong style=\"color:#2c1a0e;\">Dirección:</strong> Calle Castelló 31, 1º izquierda, Salamanca, Madrid\n                <br>\n                <a href=\"https://www.google.com/maps/place/Calle+de+Castelló,+31,+Salamanca,+28001+Madrid\"\n                   target=\"_blank\"\n                   style=\"color:#b07d4f; font-weight:700; text-decoration:none;\">\n                  Abrir en Google Maps →\n                </a>\n              </div>\n\n            </td>\n          </tr>\n\n          <!-- INFO BLOCK -->\n          <tr>\n            <td style=\"font-size:14px; color:#555; line-height:1.75; padding-bottom:18px; text-align:left;\">\n\n              <strong style=\"color:#2c1a0e;\">🚇 Cómo llegar</strong><br>\n              El centro se encuentra en el barrio de Salamanca, muy bien comunicado. Las paradas de metro más cercanas son Velázquez (L4) y Príncipe de Vergara (L2/L9), a pocos minutos a pie.\n              <br><br>\n\n              <strong style=\"color:#2c1a0e;\">🅿️ Aparcamiento</strong><br>\n              Dispones de plazas de estacionamiento SER en la zona y parkings públicos cercanos. Te recomendamos llegar con un poco de antelación.\n\n            </td>\n          </tr>\n\n          <!-- LINE -->\n          <tr>\n            <td style=\"padding:22px 0;\">\n              <div style=\"height:1px; background:#ede5d8;\"></div>\n            </td>\n          </tr>\n\n          <!-- FOOTER TEXT -->\n          <tr>\n            <td style=\"font-size:14px; color:#666; line-height:1.75; padding-bottom:20px; text-align:left;\">\n              Si necesitas modificar o cancelar tu cita, estaremos encantadas de ayudarte por teléfono o WhatsApp.\n            </td>\n          </tr>\n\n          <!-- CTA BUTTONS -->\n          <tr>\n            <td align=\"center\" style=\"padding:0 0 28px;\">\n\n              <!-- Call -->\n              <a href=\"tel:+34640802714\"\n                 style=\"background:#2c1a0e; color:#fffdf9; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:12px 22px;\n                        border-radius:10px; display:inline-block;\">\n                📞 Llamar ahora\n              </a>\n\n              <!-- Spacer -->\n              <span style=\"display:inline-block; width:10px;\"></span>\n\n              <!-- WhatsApp -->\n              <a href=\"https://wa.me/34640802714?text=Hola%20Teresa%2C%20tengo%20una%20duda%20sobre%20mi%20cita.\"\n                 target=\"_blank\"\n                 style=\"background:#fffdf9; color:#2c1a0e; text-decoration:none;\n                        font-size:14px; font-weight:700; padding:11px 20px;\n                        border-radius:10px; display:inline-block; border:1px solid #d9c9b4;\">\n                💬 WhatsApp\n              </a>\n\n            </td>\n          </tr>\n\n          <!-- QUOTE -->\n          <tr>\n            <td style=\"font-size:14px; color:#9e7a5a; line-height:1.75; padding-bottom:22px; text-align:center; font-style:italic; border-top:1px solid #ede5d8; padding-top:22px;\">\n              \"Vienes por un masaje. Te vas más ligero, más viva, más tú.\"\n            </td>\n          </tr>\n\n          <!-- FOOTER FINAL -->\n          <tr>\n            <td style=\"font-size:13px; color:#888; line-height:1.75; text-align:left;\">\n              Gracias por confiar en <strong style=\"color:#2c1a0e;\">Tornasol Bienestar</strong>.\n              <br>\n              Con cariño, Teresa Figueroa · Terapeuta de bienestar\n              <br><br>\n              <span style=\"color:#aaa;\">\n                Tel. +34 640 80 27 14 · tornasol.bienestar.belleza@gmail.com\n              </span>\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        480
+      ],
+      "id": "f85dc340-3146-4367-b1e4-74babe1e814e",
+      "name": "EMAIL 24H ANTES",
+      "webhookId": "c1ae4903-d7f8-45aa-9725-f291daeaf07b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ryxHkzomci5whSBU",
+          "name": "tornasol"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -32,
+        288
+      ],
+      "id": "258c45fb-8bd1-4755-b57d-61d7b06082bf",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "tornasolcontacto3@gmail.com",
+          "mode": "list",
+          "cachedResultName": "tornasolcontacto3@gmail.com"
+        },
+        "returnAll": true,
+        "timeMax": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        288
+      ],
+      "id": "3f5b09b6-aa7d-4ba3-9a26-923eef5b8be8",
+      "name": "Get many events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "ZwNI01XrsFRnMJdg",
+          "name": "TORNASOL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f441cb5-32b7-4513-949c-1da02732bcbc",
+              "leftValue": "={{ $json.fechaHoraGC }}",
+              "rightValue": "={{ $now.setZone('Europe/Madrid') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            },
+            {
+              "id": "f2fa1f32-6340-4e90-878b-1e7c95096297",
+              "leftValue": "={{ $json.fechaHoraGC }}",
+              "rightValue": "={{ $now.setZone('Europe/Madrid').plus(2, 'hours') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        288
+      ],
+      "id": "25fccf7a-a575-48df-b7ac-1c2705950308",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1bb58aa3-3168-40b1-87a2-d12eef992383",
+              "leftValue": "={{ $json.fechaHoraGC }}",
+              "rightValue": "={{ $now.setZone('Europe/Madrid') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            },
+            {
+              "id": "1b93fab5-63a1-43d3-97a4-3909663ee92f",
+              "leftValue": "={{ $json.fechaHoraGC }}",
+              "rightValue": "={{ $now.setZone('Europe/Madrid').plus(1, 'day') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        480
+      ],
+      "id": "af56b654-9bfc-43be-ac6b-4527adf48ca6",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Xt3ZocYvDsIDMS8JElEpt5fFcdXzdQ_l7TcU9V0E0CU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        288
+      ],
+      "id": "708b94dc-985e-40b4-8843-925496394171",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "px0flVbICKq2At2u",
+          "name": "TORNASOL"
+        }
+      }
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "CORREO": "7nachoo@gmail.com",
+          "NOMBRE": "Ignacio Arcala ",
+          "FECHA": "2026-03-21T13:00:00+02:00",
+          "SERVICIO": "Masaje Zen Vital\n",
+          "CalendarID": null,
+          "TELEFONO": "625131640"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "repo": {
+    "owner": "7nachooo",
+    "name": "WORKFLOWS"
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-03-10T16:14:27.233Z",
+      "createdAt": "2026-03-10T16:14:27.233Z",
+      "role": "workflow:owner",
+      "workflowId": "E5GlnncN4YljGXGh",
+      "projectId": "lqK9FRssQ2UFPW9I"
+    }
+  ],
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "updatedAt": "2026-03-10T16:14:12.973Z",
+      "createdAt": "2026-03-10T16:14:12.973Z",
+      "id": "3pgstlrqjK6cwEu3",
+      "name": "TORNASOL"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-03-20T17:13:54.881Z",
+  "versionId": "eca8d29a-40c6-41cb-98c3-7fbd9a48f85b"
+}
