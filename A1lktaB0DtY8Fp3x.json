@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-18T18:05:14.000Z",
-    "createdAt": "2026-03-18T18:00:38.760Z",
-    "versionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1",
+    "updatedAt": "2026-03-21T18:30:27.000Z",
+    "createdAt": "2026-03-21T18:30:23.704Z",
+    "versionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a",
     "workflowId": "A1lktaB0DtY8Fp3x",
     "nodes": [
       {
@@ -13,7 +13,7 @@
               {
                 "id": "e738fe69-17dd-4d9a-b890-fe08cb319959",
                 "name": "response",
-                "value": "={{ $('OpenAI2').first().json.message.content }}",
+                "value": "={{ $json.message.content }}",
                 "type": "string"
               }
             ]
@@ -345,11 +345,11 @@
       }
     },
     "authors": "Ignacio arcala",
-    "name": "Version 0d8eec7d",
+    "name": "Version c77dfe0a",
     "description": "",
     "autosaved": true
   },
-  "activeVersionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1",
+  "activeVersionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a",
   "connections": {
     "Google Calendar1": {
       "ai_tool": [
@@ -449,7 +449,7 @@
             {
               "id": "e738fe69-17dd-4d9a-b890-fe08cb319959",
               "name": "response",
-              "value": "={{ $('OpenAI2').first().json.message.content }}",
+              "value": "={{ $json.message.content }}",
               "type": "string"
             }
           ]
@@ -697,7 +697,20 @@
     }
   ],
   "origin": "n8n",
-  "pinData": {},
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Fecha": "2026-03-27",
+          "Hora": "18:00",
+          "Duracion": "60"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "repo": {
     "owner": "7nachooo",
     "name": "WORKFLOWS"
@@ -729,6 +742,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-18T18:05:14.259Z",
-  "versionId": "0d8eec7d-71f4-4063-9c98-1507c99d1ba1"
+  "updatedAt": "2026-03-21T18:30:23.703Z",
+  "versionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a"
 }
