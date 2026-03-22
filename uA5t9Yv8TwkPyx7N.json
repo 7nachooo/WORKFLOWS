@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-14T10:29:59.000Z",
-    "createdAt": "2026-03-14T10:21:19.888Z",
-    "versionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e",
+    "updatedAt": "2026-03-21T19:28:01.000Z",
+    "createdAt": "2026-03-21T19:28:00.965Z",
+    "versionId": "1d56e168-8073-43c4-9005-7c2391b2300a",
     "workflowId": "uA5t9Yv8TwkPyx7N",
     "nodes": [
       {
@@ -43,7 +43,7 @@
         "type": "n8n-nodes-base.googleCalendar",
         "typeVersion": 1.2,
         "position": [
-          928,
+          944,
           256
         ],
         "id": "908e1bc2-4a97-4c90-9a43-c42eb3d76bec",
@@ -82,7 +82,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.5,
         "position": [
-          704,
+          720,
           256
         ],
         "id": "51614b17-28e7-4c5a-84ca-95c10278b49e",
@@ -111,7 +111,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1584,
+          1392,
           256
         ],
         "id": "59a05f3d-85ad-4562-b7b1-c07be105c865",
@@ -124,7 +124,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          480,
+          496,
           256
         ],
         "id": "3cf1d014-1dd6-4adc-8da2-684ef1b74950",
@@ -148,7 +148,7 @@
         "type": "n8n-nodes-base.googleSheets",
         "typeVersion": 4.7,
         "position": [
-          1136,
+          1168,
           256
         ],
         "id": "13ebabbf-e78f-4db3-9b75-36c670792a49",
@@ -219,11 +219,11 @@
       }
     },
     "authors": "Ignacio arcala",
-    "name": "Version 03fadd2e",
+    "name": "Version 1d56e168",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
-  "activeVersionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e",
+  "activeVersionId": "1d56e168-8073-43c4-9005-7c2391b2300a",
   "connections": {
     "When Executed by Another Workflow": {
       "main": [
@@ -326,7 +326,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.2,
       "position": [
-        928,
+        944,
         256
       ],
       "id": "908e1bc2-4a97-4c90-9a43-c42eb3d76bec",
@@ -365,7 +365,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        704,
+        720,
         256
       ],
       "id": "51614b17-28e7-4c5a-84ca-95c10278b49e",
@@ -394,7 +394,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1584,
+        1392,
         256
       ],
       "id": "59a05f3d-85ad-4562-b7b1-c07be105c865",
@@ -407,7 +407,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
+        496,
         256
       ],
       "id": "3cf1d014-1dd6-4adc-8da2-684ef1b74950",
@@ -431,7 +431,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1136,
+        1168,
         256
       ],
       "id": "13ebabbf-e78f-4db3-9b75-36c670792a49",
@@ -477,6 +477,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-16T19:14:32.552Z",
-  "versionId": "03fadd2e-28f0-4d35-9714-b2957ff85a5e"
+  "updatedAt": "2026-03-21T19:28:00.962Z",
+  "versionId": "1d56e168-8073-43c4-9005-7c2391b2300a"
 }
