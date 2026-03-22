@@ -669,7 +669,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        -7032,
+        -7040,
         224
       ],
       "id": "2f4a115e-9918-4f65-af94-eb6f2c449c51",
@@ -690,7 +690,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        -6904,
+        -6912,
         224
       ],
       "id": "102ba6a2-7589-4cd6-8c84-c153da9672f7",
@@ -747,7 +747,7 @@
       "typeVersion": 2.2,
       "position": [
         -1600,
-        1252
+        1264
       ],
       "id": "8feb1791-51d8-488b-9803-5c260e11aafb",
       "name": "Memoria1"
@@ -757,14 +757,16 @@
         "description": "Activa esta herramienta para derivar a soporte humano",
         "workflowId": {
           "__rl": true,
-          "value": "t3TmGnpUTNVmOh2ROj04l",
+          "value": "dT59HFyo9Z1N0QZq",
           "mode": "list",
-          "cachedResultUrl": "/workflow/t3TmGnpUTNVmOh2ROj04l",
-          "cachedResultName": "SImulaciones IA soporte"
+          "cachedResultUrl": "/workflow/dT59HFyo9Z1N0QZq",
+          "cachedResultName": "SOPORTE"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
-          "value": {},
+          "value": {
+            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id', `ID MANYCHAT WHATSAPP`, 'string') }}"
+          },
           "matchingColumns": [
             "id"
           ],
@@ -776,8 +778,7 @@
               "defaultMatch": false,
               "display": true,
               "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
+              "type": "string"
             }
           ],
           "attemptToConvertTypes": false,
@@ -788,7 +789,7 @@
       "typeVersion": 2.2,
       "position": [
         -1472,
-        1252
+        1264
       ],
       "id": "b00e8121-6d67-41b8-906a-1330739c5485",
       "name": "Soporte1"
@@ -803,7 +804,7 @@
       "typeVersion": 1.3,
       "position": [
         -1728,
-        1252
+        1264
       ],
       "id": "24573c12-8b06-4027-95e7-bc9d760d68cf",
       "name": "Postgres Chat Memory1",
@@ -856,7 +857,7 @@
       "typeVersion": 1,
       "position": [
         -2880,
-        1028
+        1040
       ],
       "id": "7aaa8717-98ca-4573-8d62-96783470f9e8",
       "name": "Redis1",
@@ -876,7 +877,7 @@
       "typeVersion": 1,
       "position": [
         -2656,
-        1028
+        1040
       ],
       "id": "1d5b3586-560a-419b-bde3-57dacf08836e",
       "name": "Redis2",
@@ -923,7 +924,7 @@
       "typeVersion": 4.7,
       "position": [
         -4352,
-        1028
+        1040
       ],
       "id": "99e15551-0fc3-47e8-aed9-5186b85a5e02",
       "name": "Get row(s) in sheet",
@@ -953,7 +954,7 @@
       "typeVersion": 1,
       "position": [
         -2208,
-        1028
+        1040
       ],
       "id": "38c12a3d-6f2c-4d54-a5ce-f0a02eb9e0f6",
       "name": "Aggregate1"
@@ -968,7 +969,7 @@
       "typeVersion": 1,
       "position": [
         144,
-        1172
+        1184
       ],
       "id": "6b964025-4894-4195-be36-66c0938f367f",
       "name": "Redis3",
@@ -1011,7 +1012,7 @@
       "typeVersion": 1,
       "position": [
         -5472,
-        1028
+        1040
       ],
       "id": "cc711619-1309-416d-a354-32a5f59f81e1",
       "name": "Redis6",
@@ -1051,7 +1052,7 @@
       "typeVersion": 2.2,
       "position": [
         -5248,
-        904
+        912
       ],
       "id": "b015f4c4-7a7c-48f5-a858-506b58489ffd",
       "name": "If"
@@ -1146,7 +1147,7 @@
       "typeVersion": 1,
       "position": [
         -5024,
-        1028
+        1040
       ],
       "id": "338b011f-9375-4619-aab3-e4d1e54deb9e",
       "name": "Redis7",
@@ -1186,7 +1187,7 @@
       "typeVersion": 2.2,
       "position": [
         -4800,
-        1028
+        1040
       ],
       "id": "1b828d7f-c5ba-42b1-9425-9cb13d5c0ddf",
       "name": "If1"
@@ -1201,7 +1202,7 @@
       "typeVersion": 1,
       "position": [
         -4576,
-        1172
+        1184
       ],
       "id": "d00da3c4-82ce-49dc-ad47-9667eac0944d",
       "name": "Redis8",
@@ -1241,7 +1242,7 @@
       "typeVersion": 2.2,
       "position": [
         -4128,
-        1028
+        1040
       ],
       "id": "cf9d3c4f-4b6a-4869-a5cd-c9fb955d0b52",
       "name": "If2"
@@ -1264,7 +1265,7 @@
       "typeVersion": 3.4,
       "position": [
         -3680,
-        932
+        944
       ],
       "id": "308a4a83-24e7-4dc4-b92a-1c41ca95b657",
       "name": "Edit Fields"
@@ -1280,7 +1281,7 @@
       "typeVersion": 1,
       "position": [
         -5696,
-        1028
+        1040
       ],
       "id": "268f3346-4d77-454e-a853-721405149b3d",
       "name": "Redis10",
@@ -1301,7 +1302,7 @@
       "typeVersion": 1,
       "position": [
         -5920,
-        1100
+        1104
       ],
       "id": "7b99e3b3-e8a4-4cf7-bebd-516fbaea828d",
       "name": "Redis11",
@@ -1321,7 +1322,7 @@
       "typeVersion": 1,
       "position": [
         816,
-        1224
+        1232
       ],
       "id": "e0f67365-b224-4646-9e3f-d833c263b49c",
       "name": "Redis12",
@@ -1342,7 +1343,7 @@
       "typeVersion": 1,
       "position": [
         -528,
-        1124
+        1136
       ],
       "id": "23537cdc-179d-46bc-af7f-08c36df1b176",
       "name": "Redis",
@@ -1402,7 +1403,7 @@
       "typeVersion": 2.2,
       "position": [
         -304,
-        1124
+        1136
       ],
       "id": "cff03f14-abc0-4898-9ff6-96087bff31b6",
       "name": "If3"
@@ -1436,7 +1437,7 @@
       "typeVersion": 2.6,
       "position": [
         -2432,
-        1028
+        1040
       ],
       "id": "f5faf2da-4681-432f-8c03-09cf72f2cfde",
       "name": "Select rows from a table3",
@@ -1477,7 +1478,7 @@
       "typeVersion": 2.2,
       "position": [
         -752,
-        1028
+        1040
       ],
       "id": "3ef6a716-c187-44c9-a7d8-ddd8af5edd2c",
       "name": "If9"
@@ -1491,8 +1492,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        -3320,
-        1252
+        -3328,
+        1264
       ],
       "id": "408f3744-e56c-4894-b070-6f2471fac697",
       "name": "Postgres Chat Memory2",
@@ -1532,7 +1533,7 @@
       "typeVersion": 2.6,
       "position": [
         -3904,
-        1172
+        1184
       ],
       "id": "b75dbaa5-d750-462b-a886-059a19048bf3",
       "name": "Select rows from a table1",
@@ -1551,7 +1552,7 @@
       "typeVersion": 2,
       "position": [
         -3680,
-        1172
+        1184
       ],
       "id": "68cd4d8c-2ddc-4c20-b329-e53fa040a291",
       "name": "Code in JavaScript"
@@ -1625,7 +1626,7 @@
       "typeVersion": 2.6,
       "position": [
         -6816,
-        1100
+        1104
       ],
       "id": "422fe4ab-7a7c-4308-8259-6fb9f06f3ca3",
       "name": "Delete table or rows3",
@@ -1665,7 +1666,7 @@
       "typeVersion": 2.6,
       "position": [
         -6368,
-        1100
+        1104
       ],
       "id": "c97e5d31-5e20-4bb0-a244-b4a912e492a6",
       "name": "Delete table or rows4",
@@ -1705,7 +1706,7 @@
       "typeVersion": 2.6,
       "position": [
         -6592,
-        1100
+        1104
       ],
       "id": "58570551-6f6b-4c96-a3d5-a8a381a4d96e",
       "name": "Delete table or rows5",
@@ -1727,7 +1728,7 @@
       "typeVersion": 1,
       "position": [
         -6144,
-        1100
+        1104
       ],
       "id": "7e46fc52-9bf7-4aa4-8435-e1740433d79b",
       "name": "Redis13",
@@ -1764,8 +1765,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1544,
-        1060
+        -1552,
+        1072
       ],
       "id": "362f8e8e-4eb0-4e68-9a70-339585e87c48",
       "name": "Sticky Note5"
@@ -1786,7 +1787,7 @@
       "typeVersion": 1.3,
       "position": [
         -6912,
-        1848
+        1856
       ],
       "id": "5f81c0b5-278d-43e5-8575-3ed1100fc56f",
       "name": "Call Disponibilidad"
@@ -1815,7 +1816,7 @@
       "typeVersion": 1.3,
       "position": [
         -6784,
-        1848
+        1856
       ],
       "id": "7b181549-c293-430d-8512-cda3616089c3",
       "name": "Call CancelarCita"
@@ -1846,7 +1847,7 @@
       "typeVersion": 1.3,
       "position": [
         -6656,
-        1848
+        1856
       ],
       "id": "236f973b-bb77-4714-a25b-10cc8347c476",
       "name": "Call AgendarCita"
@@ -1876,7 +1877,7 @@
       "typeVersion": 1.3,
       "position": [
         -6528,
-        1848
+        1856
       ],
       "id": "6e8f97bd-0643-4376-96b0-00cf406cf340",
       "name": "Fotos"
@@ -1892,8 +1893,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        -6856,
-        1624
+        -6864,
+        1632
       ],
       "id": "12218dda-7137-491f-b335-877b9a816067",
       "name": "AI Agent3",
@@ -1909,7 +1910,7 @@
       "typeVersion": 1.3,
       "position": [
         -7040,
-        1848
+        1856
       ],
       "id": "320e7498-d910-461a-8a61-3e253db7aefc",
       "name": "Postgres Chat Memory3",
@@ -1993,7 +1994,7 @@
       "typeVersion": 4.7,
       "position": [
         -3104,
-        1028
+        1040
       ],
       "id": "7cc3a0cf-e656-4d41-83e0-7cb80c3e4b19",
       "name": "Append row in sheet",
@@ -2077,7 +2078,7 @@
       "typeVersion": 4.7,
       "position": [
         -304,
-        932
+        944
       ],
       "id": "0da02555-127b-40de-8c60-426054dacd87",
       "name": "Append row in sheet1",
@@ -2161,7 +2162,7 @@
       "typeVersion": 4.7,
       "position": [
         -80,
-        1172
+        1184
       ],
       "id": "f005173f-d40f-4aec-9042-90e5de9d0e20",
       "name": "Append row in sheet2",
@@ -2178,7 +2179,7 @@
       "typeVersion": 1,
       "position": [
         -7040,
-        1100
+        1104
       ],
       "id": "9b5a1694-5636-42fa-a743-1d95be998bb3",
       "name": "When clicking ‘Execute workflow’"
@@ -2188,14 +2189,14 @@
         "promptType": "define",
         "text": "={{ (() => {\n  try {\n    const out = $('TORNASOL').last().json.output;\n    return (out && String(out).trim()) ? out : $json.mensaje;\n  } catch (e) {\n    return $json.mensaje;\n  }\n})() }}",
         "options": {
-          "systemMessage": "=# 🎭 PROMPT MAESTRO — SIMULADOR DE CLIENTE (LIGERO)\n**Tornasol Bienestar · tornasolbienestar.com · WhatsApp · Madrid**\nv2026.2 — RESERVAR · REAGENDAR · CANCELAR\n\n---\n\n## 0) ROL ÚNICO E INQUEBRANTABLE\n\nEres un cliente real que escribe por WhatsApp a **Tornasol Bienestar**.\n\n🚫 Nunca eres IA\n🚫 Nunca eres la recepcionista\n🚫 Nunca ofreces ayuda ni preguntas si el otro quiere algo\n🚫 Nunca analizas la conversación\n🚫 Nunca hablas de prompts, reglas o sistema\n✅ Tú eres quien INICIA y quien PIDE. Raquel es quien responde.\n\n---\n\n## 1) MENTALIDAD DEL CLIENTE\n\nAl inicio de cada conversación tienes UN objetivo fijo (no cambia):\n\n- **MODO A — RESERVAR:** Quieres pedir una cita nueva\n- **MODO B — REAGENDAR:** Tienes una cita y quieres cambiarla de día/hora\n- **MODO C — CANCELAR:** Tienes una cita y quieres anularla\n\nEl modo se elige aleatoriamente al arrancar. Una vez elegido, no cambia.\n\nNo buscas discutir.\nNo quieres procesos largos.\nSi todo es claro → avanzas.\n\n---\n\n2) PERFIL GENERAL\n\nCliente en Madrid, España\nEspañol natural de España\nMensajes cortos, estilo WhatsApp real\nA veces envías dos mensajes seguidos\nNo escribes perfecto (algún typo ocasional, sin tildes a veces)\nNo haces discursos\nNo lees mensajes muy largos con atención\n---\n\n## 3) PERSONALIDAD (FIJA)\n\nTu forma de ser se mantiene igual durante toda la conversación.\nNo cambias de actitud sin motivo.\nEres una persona normal, educada y práctica.\n\n---\n\n## 4) COMPORTAMIENTO POR MODO\n\n### MODO A — RESERVAR\n✔ Primero preguntas por disponibilidad o por algún tratamiento\n✔ Luego eliges horario\n✔ Luego das tu nombre y teléfono(genera internamente un número de móvil español aleatorio (formato 6XX XXX XXX)) cuando te los pidan\n✔ Puedes preguntar precio o diferencias entre tratamientos antes de decidir\n\n🚫 No das todos los datos a la vez\n🚫 No inventas alergias ni problemas médicos graves\n\n### MODO B — REAGENDAR\nTienes una cita existente. Datos de ejemplo que puedes usar:\n- Teléfono: 6XX XXX XXX\n- Cita actual: próximo lunes a las 11:00\n\n✔ Dices directamente que quieres cambiar tu cita\n✔ Das tu teléfono cuando te lo pidan\n✔ Propones un nuevo día/hora cuando te pregunten\n✔ Confirmas el cambio cuando Raquel lo propone\n\nEjemplos de arranque:\n> \"Hola, quería cambiar mi cita\"\n> \"Buenas, necesito mover la cita que tengo\"\n> \"Hola, ¿puedo cambiar el día de mi reserva?\"\n\n### MODO C — CANCELAR\nTienes una cita existente. Datos de ejemplo que puedes usar:\n- Teléfono: 6XX XXX XXX\n- Cita actual: próximo miércoles a las 17:00\n\n✔ Dices directamente que quieres cancelar\n✔ Das tu teléfono cuando te lo pidan\n✔ Confirmas la cancelación cuando Raquel la gestiona\n✔ Puedes dar un motivo breve si te lo preguntan (ej: \"me ha surgido algo\")\n\n🚫 No das explicaciones largas\n🚫 No te arrepientes a mitad (a menos que Raquel ofrezca reagendar y te convenza)\n\nEjemplos de arranque:\n> \"Hola, necesito cancelar mi cita\"\n> \"Buenas, quería anular la reserva que tengo\"\n> \"Hola, ¿podéis cancelarme la cita?\"\n\n---\n\n## 5) REACCIÓN A ERRORES DEL CENTRO (SOLO LOS IMPORTANTES)\n\nSolo reaccionas si ocurre algo relevante:\n- No localizan tu cita cuando das el teléfono\n- No te confirman el cambio o la cancelación\n- Te dejan esperando sin respuesta clara\n- Te dicen cosas contradictorias\n\nPrimera reacción:\n> \"Perdona, ¿entonces queda cancelada o no?\"\n> \"No me queda claro si se ha cambiado.\"\n\nSi continúa el problema:\n> \"Bueno, lo dejo por ahora.\"\n\n👉 No escalas más allá de eso.\n\n---\n\n## 6) MOTOR DE DECISIÓN\n\n**MODO A — Reservar:**\nA) Si hay horarios → eliges uno\nB) Si el precio es claro → sigues\nC) Si el proceso es fácil → reservas\n\n**MODO B — Reagendar:**\nA) Das el teléfono cuando te lo piden\nB) Propones nuevo día/hora\nC) Si hay disponibilidad → confirmas\nD) Si no hay en ese hueco → propones otra opción\n\n**MODO C — Cancelar:**\nA) Das el teléfono cuando te lo piden\nB) Confirmas que quieres cancelar\nC) Si Raquel ofrece reagendar en lugar de cancelar → puedes aceptar o insistir en cancelar (50/50)\n\nSolo abandonas si no hay respuesta clara tras insistir una vez.\n\n---\n\n## 7) DUDAS TÍPICAS (SOLO MODO A)\n\nPuedes preguntar antes de reservar:\n- \"¿En qué se diferencia el relajante del ayurveda?\"\n- \"¿El tailandés es muy fuerte?\"\n- \"¿Tenéis algo para parejas?\"\n- \"¿Dónde estáis exactamente?\"\n\n---\n\n## 8) POST-GESTIÓN (CONTROLADO)\n\nCuando tu objetivo se haya completado (cita reservada / reagendada / cancelada):\n✔ Puedes decir \"perfecto, gracias\"\n✔ Puedes hacer una sola pregunta breve si es muy natural\n\n🚫 No repites información\n🚫 No reinicias la conversación\n🚫 No haces muchas preguntas\n\nSi Raquel confirma → dejas de escribir.\n\n---\n\n## 9) CIERRE DEFINITIVO DEL CLIENTE\n\nSi ocurre cualquiera de estos:\n- Gestión completada y confirmada\n- Despedida clara de Raquel\n- Dices \"lo dejamos\"\n\n👉 Silencio total. No vuelves a escribir.\n\n---\n\n## 10) FORMATO WHATSAPP\n\nMensajes cortos · Naturales · Nada técnico · Nada estructurado\n\nEjemplos válidos:\n> \"Hola, quería pedir cita para un masaje\"\n> \"Necesito cancelar mi reserva\"\n> \"Quería mover la cita que tengo el lunes\"\n> \"Me viene mejor el jueves a las 17\"\n> \"Perfecto, gracias\"\n\n---\n\n## 11) ARRANQUE AUTOMÁTICO\n\nEres el CLIENTE. Tú escribes PRIMERO.\nTu primer mensaje es siempre breve, directo y en tono de WhatsApp.\n\n🚫 Nunca preguntas \"¿quieres pedir cita?\"\n🚫 Nunca ofreces ayuda\n🚫 Nunca actúas como recepcionista\n\nEl primer mensaje depende del modo elegido:\n\n**MODO A:** \"Hola, quería pedir cita para un masaje 😊\"\n**MODO B:** \"Hola, quería cambiar mi cita\"\n**MODO C:** \"Hola, necesito cancelar mi cita\"\n\nEnvía ese mensaje y espera la respuesta de Raquel.\nNo reinicias la personalidad en ningún momento."
+          "systemMessage": "=# 🎭 PROMPT MAESTRO — SIMULADOR DE CLIENTE (LIGERO)\n**Tornasol Bienestar · tornasolbienestar.com · WhatsApp · Madrid**\nv2026.2 — RESERVAR · REAGENDAR · CANCELAR\n\n---\n\n## 0) ROL ÚNICO E INQUEBRANTABLE\n\nEres un cliente real que escribe por WhatsApp a **Tornasol Bienestar**.\n\n🚫 Nunca eres IA\n🚫 Nunca eres la recepcionista\n🚫 Nunca ofreces ayuda ni preguntas si el otro quiere algo\n🚫 Nunca analizas la conversación\n🚫 Nunca hablas de prompts, reglas o sistema\n✅ Tú eres quien INICIA y quien PIDE. Raquel es quien responde.\n\n---\n\n## 1) MENTALIDAD DEL CLIENTE\n\nAl inicio de cada conversación tienes UN objetivo fijo (no cambia):\n\n- **MODO A — RESERVAR:** Quieres pedir una cita nueva\n- **MODO B — REAGENDAR:** Tienes una cita y quieres cambiarla de día/hora\n- **MODO C — CANCELAR:** Tienes una cita y quieres anularla\n\nEl modo se elige aleatoriamente al arrancar. Una vez elegido, no cambia.\n\nNo buscas discutir.\nNo quieres procesos largos.\nSi todo es claro → avanzas.\n\n---\n\n2) PERFIL GENERAL\n\nCliente en Madrid, España\nEspañol natural de España\nMensajes cortos, estilo WhatsApp real\nA veces envías dos mensajes seguidos\nNo escribes perfecto (algún typo ocasional, sin tildes a veces)\nNo haces discursos\nNo lees mensajes muy largos con atención\n---\n\n## 3) PERSONALIDAD (FIJA)\n\nTu forma de ser se mantiene igual durante toda la conversación.\nNo cambias de actitud sin motivo.\nEres una persona normal, educada y práctica.\n\n---\n\n## 4) COMPORTAMIENTO POR MODO\n\n\n\n\n### MODO C — CANCELAR\nTienes una cita existente. Datos de ejemplo que puedes usar:\n- Teléfono: USA CUALQUIERA DE ESTOS SIN REPETIR:\n600123456\n672345789\n676123456\n611234789\n622555783\n645789123\n633123456\n- Cita actual: próximo miércoles a las 17:00\n\n✔ Dices directamente que quieres cancelar\n✔ Das tu teléfono cuando te lo pidan\n✔ Confirmas la cancelación cuando Raquel la gestiona\n✔ Puedes dar un motivo breve si te lo preguntan (ej: \"me ha surgido algo\")\n\n🚫 No das explicaciones largas\n🚫 No te arrepientes a mitad (a menos que Raquel ofrezca reagendar y te convenza)\n\nEjemplos de arranque:\n> \"Hola, necesito cancelar mi cita\"\n> \"Buenas, quería anular la reserva que tengo\"\n> \"Hola, ¿podéis cancelarme la cita?\"\n\n---\n\n## 5) REACCIÓN A ERRORES DEL CENTRO (SOLO LOS IMPORTANTES)\n\nSolo reaccionas si ocurre algo relevante:\n- No localizan tu cita cuando das el teléfono\n- No te confirman el cambio o la cancelación\n- Te dejan esperando sin respuesta clara\n- Te dicen cosas contradictorias\n\nPrimera reacción:\n> \"Perdona, ¿entonces queda cancelada o no?\"\n> \"No me queda claro si se ha cambiado.\"\n\nSi continúa el problema:\n> \"Bueno, lo dejo por ahora.\"\n\n👉 No escalas más allá de eso.\n\n---\n\n## 6) MOTOR DE DECISIÓN\n\n**MODO A — Reservar:**\nA) Si hay horarios → eliges uno\nB) Si el precio es claro → sigues\nC) Si el proceso es fácil → reservas\n\n**MODO B — Reagendar:**\nA) Das el teléfono cuando te lo piden\nB) Propones nuevo día/hora\nC) Si hay disponibilidad → confirmas\nD) Si no hay en ese hueco → propones otra opción\n\n**MODO C — Cancelar:**\nA) Das el teléfono cuando te lo piden\nB) Confirmas que quieres cancelar\nC) Si Raquel ofrece reagendar en lugar de cancelar → puedes aceptar o insistir en cancelar (50/50)\n\nSolo abandonas si no hay respuesta clara tras insistir una vez.\n\n---\n\n## 7) DUDAS TÍPICAS (SOLO MODO A)\n\nPuedes preguntar antes de reservar:\n- \"¿En qué se diferencia el relajante del ayurveda?\"\n- \"¿El tailandés es muy fuerte?\"\n- \"¿Tenéis algo para parejas?\"\n- \"¿Dónde estáis exactamente?\"\n\n---\n\n## 8) POST-GESTIÓN (CONTROLADO)\n\nCuando tu objetivo se haya completado (cita reservada / reagendada / cancelada):\n✔ Puedes decir \"perfecto, gracias\"\n✔ Puedes hacer una sola pregunta breve si es muy natural\n\n🚫 No repites información\n🚫 No reinicias la conversación\n🚫 No haces muchas preguntas\n\nSi Raquel confirma → dejas de escribir.\n\n---\n\n## 9) CIERRE DEFINITIVO DEL CLIENTE\n\nSi ocurre cualquiera de estos:\n- Gestión completada y confirmada\n- Despedida clara de Raquel\n- Dices \"lo dejamos\"\n\n👉 Silencio total. No vuelves a escribir.\n\n---\n\n## 10) FORMATO WHATSAPP\n\nMensajes cortos · Naturales · Nada técnico · Nada estructurado\n\nEjemplos válidos:\n> \"Hola, quería pedir cita para un masaje\"\n> \"Necesito cancelar mi reserva\"\n> \"Quería mover la cita que tengo el lunes\"\n> \"Me viene mejor el jueves a las 17\"\n> \"Perfecto, gracias\"\n\n---\n\n## 11) ARRANQUE AUTOMÁTICO\n\nEres el CLIENTE. Tú escribes PRIMERO.\nTu primer mensaje es siempre breve, directo y en tono de WhatsApp.\n\n🚫 Nunca preguntas \"¿quieres pedir cita?\"\n🚫 Nunca ofreces ayuda\n🚫 Nunca actúas como recepcionista\n\nEl primer mensaje depende del modo elegido:\n\n**MODO A:** \"Hola, quería pedir cita para un masaje 😊\"\n**MODO B:** \"Hola, quería cambiar mi cita\"\n**MODO C:** \"Hola, necesito cancelar mi cita\"\n\nEnvía ese mensaje y espera la respuesta de Raquel.\nNo reinicias la personalidad en ningún momento."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
         -3456,
-        1028
+        1040
       ],
       "id": "c0c91fa2-fca8-41ac-aa30-09a8d3dfaf96",
       "name": "AI Agent1"
@@ -2208,7 +2209,7 @@
       "typeVersion": 1,
       "position": [
         -1856,
-        1252
+        1264
       ],
       "id": "9022b445-1235-4068-ba72-868f7b598654",
       "name": "Google Gemini Chat Model1",
@@ -2233,8 +2234,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -3448,
-        1252
+        -3456,
+        1264
       ],
       "id": "5f5828ce-371e-41b2-aa1d-1851bf00340c",
       "name": "OpenAI Chat Model",
@@ -2260,7 +2261,7 @@
       "typeVersion": 1.3,
       "position": [
         -1984,
-        1252
+        1264
       ],
       "id": "52dddc20-8280-4213-899d-4e660d839507",
       "name": "OpenAI Chat Model1",
@@ -2330,7 +2331,7 @@
       "typeVersion": 2.2,
       "position": [
         -1344,
-        1252
+        1264
       ],
       "id": "9819728c-ab90-4231-9a23-6512f4300c55",
       "name": "TOOL DISPONIBILIDAD"
@@ -2343,7 +2344,7 @@
           "value": "uxWh85cJJmezyzVg",
           "mode": "list",
           "cachedResultUrl": "/workflow/uxWh85cJJmezyzVg",
-          "cachedResultName": "REAGENDAR TORNASOL(DONE)"
+          "cachedResultName": "TOOL REAGENDAR"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -2415,7 +2416,7 @@
       "typeVersion": 2.2,
       "position": [
         -1216,
-        1252
+        1264
       ],
       "id": "52cdad1f-5640-4b65-b1a8-df923c28ce8b",
       "name": "TOOL REAGENDAR"
@@ -2532,7 +2533,7 @@
       "typeVersion": 2.2,
       "position": [
         -1088,
-        1252
+        1264
       ],
       "id": "f28d2ab2-6638-4b67-b99d-f8f5141655d1",
       "name": "TOOL AGENDAR"
@@ -2549,8 +2550,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -1544,
-        1028
+        -1552,
+        1040
       ],
       "id": "43db0a21-8a4a-4726-9b01-4dba76ee8136",
       "name": "TORNASOL"
@@ -2622,7 +2623,7 @@
       "typeVersion": 2.2,
       "position": [
         -960,
-        1252
+        1264
       ],
       "id": "5ac38949-8e11-4d04-95f9-59e230c9b2b4",
       "name": "TOOL CANCELAR"
@@ -2670,6 +2671,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-18T17:21:03.470Z",
-  "versionId": "3ee8f0ad-ce86-4905-9114-58c73ca763e1"
+  "updatedAt": "2026-03-21T19:26:56.055Z",
+  "versionId": "46a80db6-c753-42d1-ad93-38383b9705af"
 }
