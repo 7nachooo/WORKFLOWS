@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-18T16:20:24.000Z",
-    "createdAt": "2026-03-18T16:20:23.860Z",
-    "versionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26",
+    "updatedAt": "2026-03-21T19:06:31.000Z",
+    "createdAt": "2026-03-21T19:06:30.855Z",
+    "versionId": "37f362b0-48a4-44de-bd46-8100d61205a0",
     "workflowId": "pXLFOF5zn7egc1ol",
     "nodes": [
       {
@@ -160,13 +160,12 @@
           "columns": {
             "mappingMode": "defineBelow",
             "value": {
-              "id": "={{ $json.id }}",
               "telefono": "={{ $('When Executed by Another Workflow').item.json.TELEFONO.toString().replace(/\\s+/g, '').replace(/^\\+34/, '') }}",
               "correo": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
-              "fecha": "={{  (() => {   const fecha = $('When Executed by Another Workflow').item.json.Fecha;   const hora = $('When Executed by Another Workflow').item.json.Hora;    if (!fecha || !hora) return '';    const d = new Date(`${fecha} ${hora}`);    const dia = String(d.getDate()).padStart(2, '0');   const mes = String(d.getMonth() + 1).padStart(2, '0');   const anio = d.getFullYear();   const horas = String(d.getHours()).padStart(2, '0');   const minutos = String(d.getMinutes()).padStart(2, '0');    return `${dia}-${mes}-${anio} ${horas}:${minutos}`; })() }}",
               "nombre cliente": "={{ $('When Executed by Another Workflow').item.json.NOMBRE.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
               "servicio": "={{ $('Code in JavaScript2').item.json.Servicio.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
-              "FUENTE DE LLAMADA": "WHATSAPP"
+              "FUENTE DE LLAMADA": "WHATSAPP",
+              "fecha": "={{ $('Code in JavaScript2').item.json.fecha }} {{ $('Code in JavaScript2').item.json.Hora }}"
             },
             "matchingColumns": [
               "telefono"
@@ -180,7 +179,7 @@
                 "display": true,
                 "type": "string",
                 "canBeUsedToMatch": true,
-                "removed": false
+                "removed": true
               },
               {
                 "id": "telefono",
@@ -241,6 +240,16 @@
                 "type": "string",
                 "canBeUsedToMatch": true,
                 "removed": false
+              },
+              {
+                "id": "RECORDATORIO ENVIADO",
+                "displayName": "RECORDATORIO ENVIADO",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
               },
               {
                 "id": "description",
@@ -644,11 +653,11 @@
       }
     },
     "authors": "Ignacio arcala",
-    "name": "Version aeb47972",
+    "name": "Version 37f362b0",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
-  "activeVersionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26",
+  "activeVersionId": "37f362b0-48a4-44de-bd46-8100d61205a0",
   "connections": {
     "When Executed by Another Workflow": {
       "main": [
@@ -878,13 +887,12 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $json.id }}",
             "telefono": "={{ $('When Executed by Another Workflow').item.json.TELEFONO.toString().replace(/\\s+/g, '').replace(/^\\+34/, '') }}",
             "correo": "={{ $('When Executed by Another Workflow').item.json.CORREO }}",
-            "fecha": "={{  (() => {   const fecha = $('When Executed by Another Workflow').item.json.Fecha;   const hora = $('When Executed by Another Workflow').item.json.Hora;    if (!fecha || !hora) return '';    const d = new Date(`${fecha} ${hora}`);    const dia = String(d.getDate()).padStart(2, '0');   const mes = String(d.getMonth() + 1).padStart(2, '0');   const anio = d.getFullYear();   const horas = String(d.getHours()).padStart(2, '0');   const minutos = String(d.getMinutes()).padStart(2, '0');    return `${dia}-${mes}-${anio} ${horas}:${minutos}`; })() }}",
             "nombre cliente": "={{ $('When Executed by Another Workflow').item.json.NOMBRE.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
             "servicio": "={{ $('Code in JavaScript2').item.json.Servicio.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') }}",
-            "FUENTE DE LLAMADA": "WHATSAPP"
+            "FUENTE DE LLAMADA": "WHATSAPP",
+            "fecha": "={{ $('Code in JavaScript2').item.json.fecha }} {{ $('Code in JavaScript2').item.json.Hora }}"
           },
           "matchingColumns": [
             "telefono"
@@ -898,7 +906,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "telefono",
@@ -959,6 +967,16 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "RECORDATORIO ENVIADO",
+              "displayName": "RECORDATORIO ENVIADO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
             },
             {
               "id": "description",
@@ -1312,14 +1330,14 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "NOMBRE": "Clara Martínez",
-          "TELEFONO": "615243789",
+          "NOMBRE": "Laura Martínez",
+          "TELEFONO": "622345678",
           "CORREO": "",
-          "Servicio": "Masaje Ayurveda Relajante",
-          "Fecha": "2026-03-19",
-          "Hora": "14:00",
+          "Servicio": "Masaje Relajante",
+          "Fecha": "2026-03-26",
+          "Hora": "15:00",
           "Notas": "\n",
-          "ID CRM": "584"
+          "ID CRM": "630"
         },
         "pairedItem": {
           "item": 0
@@ -1358,6 +1376,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-18T16:29:32.220Z",
-  "versionId": "aeb47972-a746-4faa-b5a3-a8b6a77c6a26"
+  "updatedAt": "2026-03-21T19:06:30.854Z",
+  "versionId": "37f362b0-48a4-44de-bd46-8100d61205a0"
 }
