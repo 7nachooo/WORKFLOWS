@@ -923,7 +923,19 @@
     }
   ],
   "origin": "n8n",
-  "pinData": {},
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Telefono": "672345789",
+          "Fecha nueva": "2026-03-23",
+          "Hora nueva": "17:00",
+          "Fecha anterior": "2026-03-22",
+          "Hora anterior": "11:00"
+        }
+      }
+    ]
+  },
   "repo": {
     "owner": "7nachooo",
     "name": "WORKFLOWS"
@@ -955,6 +967,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-16T19:15:21.075Z",
+  "updatedAt": "2026-03-21T19:20:28.682Z",
   "versionId": "669545b9-747c-4eb2-afe3-bd045d10b61d"
 }
