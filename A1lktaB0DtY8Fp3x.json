@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-21T18:30:27.000Z",
-    "createdAt": "2026-03-21T18:30:23.704Z",
-    "versionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a",
+    "updatedAt": "2026-03-23T15:53:50.000Z",
+    "createdAt": "2026-03-23T15:53:49.232Z",
+    "versionId": "8b18fb37-8fb6-4070-8291-51ffa3cd50e4",
     "workflowId": "A1lktaB0DtY8Fp3x",
     "nodes": [
       {
@@ -26,7 +26,7 @@
         "typeVersion": 3.4,
         "position": [
           2864,
-          64
+          -48
         ]
       },
       {
@@ -49,8 +49,8 @@
         "type": "n8n-nodes-base.googleCalendarTool",
         "typeVersion": 1.2,
         "position": [
-          2016,
-          288
+          2008,
+          300
         ],
         "credentials": {
           "googleCalendarOAuth2Api": {
@@ -83,7 +83,7 @@
         "typeVersion": 1.7,
         "position": [
           2512,
-          64
+          -48
         ],
         "credentials": {
           "openAiApi": {
@@ -134,7 +134,7 @@
         "typeVersion": 2,
         "position": [
           1712,
-          64
+          -48
         ],
         "id": "96d353a0-5dbd-42c2-ae50-b93b09b5a3f5",
         "name": "Code"
@@ -166,8 +166,8 @@
         "type": "@n8n/n8n-nodes-langchain.openAi",
         "typeVersion": 1.7,
         "position": [
-          1920,
-          64
+          1936,
+          -48
         ],
         "credentials": {
           "openAiApi": {
@@ -192,7 +192,7 @@
         "typeVersion": 1.5,
         "position": [
           1488,
-          496
+          508
         ],
         "id": "77f5066e-d02e-4bc5-8308-01ac3cfdf90c",
         "name": "Basic LLM Chain"
@@ -209,8 +209,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.2,
         "position": [
-          1568,
-          720
+          1560,
+          732
         ],
         "id": "a027a564-e5d9-4aeb-acca-374fbb7a2cf4",
         "name": "OpenAI Chat Model",
@@ -241,7 +241,7 @@
         "typeVersion": 1.1,
         "position": [
           1488,
-          64
+          -48
         ],
         "id": "f0b940bf-1aea-4472-907e-0402e9b58ebd",
         "name": "When Executed by Another Workflow"
@@ -254,7 +254,7 @@
         "typeVersion": 2,
         "position": [
           2288,
-          64
+          -48
         ],
         "id": "02fd8f84-1550-4eb2-848c-7dffd016b876",
         "name": "DISPONIBILIDAD"
@@ -345,11 +345,11 @@
       }
     },
     "authors": "Ignacio arcala",
-    "name": "Version c77dfe0a",
+    "name": "Version 8b18fb37",
     "description": "",
-    "autosaved": true
+    "autosaved": false
   },
-  "activeVersionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a",
+  "activeVersionId": "8b18fb37-8fb6-4070-8291-51ffa3cd50e4",
   "connections": {
     "Google Calendar1": {
       "ai_tool": [
@@ -462,7 +462,7 @@
       "typeVersion": 3.4,
       "position": [
         2864,
-        64
+        -48
       ]
     },
     {
@@ -485,8 +485,8 @@
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.2,
       "position": [
-        2016,
-        288
+        2008,
+        300
       ],
       "credentials": {
         "googleCalendarOAuth2Api": {
@@ -519,7 +519,7 @@
       "typeVersion": 1.7,
       "position": [
         2512,
-        64
+        -48
       ],
       "credentials": {
         "openAiApi": {
@@ -570,7 +570,7 @@
       "typeVersion": 2,
       "position": [
         1712,
-        64
+        -48
       ],
       "id": "96d353a0-5dbd-42c2-ae50-b93b09b5a3f5",
       "name": "Code"
@@ -602,8 +602,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.7,
       "position": [
-        1920,
-        64
+        1936,
+        -48
       ],
       "credentials": {
         "openAiApi": {
@@ -628,7 +628,7 @@
       "typeVersion": 1.5,
       "position": [
         1488,
-        496
+        508
       ],
       "id": "77f5066e-d02e-4bc5-8308-01ac3cfdf90c",
       "name": "Basic LLM Chain"
@@ -645,8 +645,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        1568,
-        720
+        1560,
+        732
       ],
       "id": "a027a564-e5d9-4aeb-acca-374fbb7a2cf4",
       "name": "OpenAI Chat Model",
@@ -677,7 +677,7 @@
       "typeVersion": 1.1,
       "position": [
         1488,
-        64
+        -48
       ],
       "id": "f0b940bf-1aea-4472-907e-0402e9b58ebd",
       "name": "When Executed by Another Workflow"
@@ -690,7 +690,7 @@
       "typeVersion": 2,
       "position": [
         2288,
-        64
+        -48
       ],
       "id": "02fd8f84-1550-4eb2-848c-7dffd016b876",
       "name": "DISPONIBILIDAD"
@@ -742,6 +742,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-21T18:30:23.703Z",
-  "versionId": "c77dfe0a-f59f-4c77-8b9c-618a8be0884a"
+  "updatedAt": "2026-03-23T15:53:49.231Z",
+  "versionId": "8b18fb37-8fb6-4070-8291-51ffa3cd50e4"
 }
