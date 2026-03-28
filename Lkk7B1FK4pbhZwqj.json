@@ -3849,7 +3849,634 @@
     }
   ],
   "origin": "n8n",
-  "pinData": {},
+  "pinData": {
+    "Cancelar1": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-n8n.j07cwu.easypanel.host",
+            "user-agent": "axios/1.13.2",
+            "content-length": "6824",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "100.20.5.228",
+            "x-forwarded-host": "n8n-n8n.j07cwu.easypanel.host",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "840b329c6662",
+            "x-real-ip": "100.20.5.228",
+            "x-retell-signature": "v=1774026398470,d=338e121232e32534a8328764b062a0f199de0dce720e9c6514e8855f5b035571"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "call": {
+              "call_id": "playground",
+              "call_type": "web_call",
+              "agent_id": "agent_1e4584221540dbb2ab18a80e0d",
+              "agent_version": 0,
+              "agent_name": "Tornasol Agente voz n8n ",
+              "retell_llm_dynamic_variables": {
+                "call_id": "playground",
+                "session_type": "voice",
+                "call_type": "web_call",
+                "system_timezone": "America/Los_Angeles",
+                "previous_node": "Welcome Node",
+                "current_node": "Cancelar cita"
+              },
+              "collected_dynamic_variables": {
+                "previous_node": "Cancelar cita",
+                "current_node": "Cancelar Cita"
+              },
+              "call_status": "ongoing",
+              "transcript": "Agent: Buenos días, Tornasol Bienestar y Belleza, le atiende Raquel, ¿en qué puedo ayudarle?\nUser: quiero cancelar mi cita\nAgent: ¿Quieres cancelar tu cita en Tornasol Bienestar y Belleza?\nUser: si\nAgent: Perfecto, vamos a cancelarla. ¿Me dices tu nombre completo y tu teléfono, por favor?\nUser: ignacio arcala 625131640\n",
+              "transcript_object": [
+                {
+                  "messageId": "message_ae303060c9ed550b2e73c856",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Buenos días, Tornasol Bienestar y Belleza, le atiende Raquel, ¿en qué puedo ayudarle?",
+                  "createdTimestamp": 1774026396422,
+                  "words": [
+                    {
+                      "word": "Buenos ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "días, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Tornasol ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Bienestar ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "y ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Belleza, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "le ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "atiende ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Raquel, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "¿en ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "qué ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "puedo ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "ayudarle?",
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_c6c210f4b1d0e659a3714bd5",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "quiero cancelar mi cita",
+                  "createdTimestamp": 1774026396423,
+                  "words": [
+                    {
+                      "word": "quiero ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "cancelar ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "mi ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "cita",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_693811b79903b36f2fa4a983",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "¿Quieres cancelar tu cita en Tornasol Bienestar y Belleza?",
+                  "createdTimestamp": 1774026396425,
+                  "words": [
+                    {
+                      "word": "¿Quieres ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "cancelar ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "cita ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "en ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Tornasol ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Bienestar ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "y ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Belleza?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_e6f8b897a2fee3e74d549030",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "si",
+                  "createdTimestamp": 1774026396426,
+                  "words": [
+                    {
+                      "word": "si",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_35adb1ba107e424764786387",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Perfecto, vamos a cancelarla. ¿Me dices tu nombre completo y tu teléfono, por favor?",
+                  "createdTimestamp": 1774026396427,
+                  "words": [
+                    {
+                      "word": "Perfecto, ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "vamos ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "a ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "cancelarla. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "¿Me ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "dices ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "nombre ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "completo ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "y ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "teléfono, ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "por ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "favor?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_626196af6bd2df7221ff33a9",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "ignacio arcala 625131640",
+                  "createdTimestamp": 1774026396428,
+                  "words": [
+                    {
+                      "word": "ignacio ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "arcala ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "625131640",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                }
+              ],
+              "transcript_with_tool_calls": [
+                {
+                  "messageId": "message_ae303060c9ed550b2e73c856",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Buenos días, Tornasol Bienestar y Belleza, le atiende Raquel, ¿en qué puedo ayudarle?",
+                  "createdTimestamp": 1774026396422,
+                  "words": [
+                    {
+                      "word": "Buenos ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "días, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Tornasol ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Bienestar ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "y ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Belleza, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "le ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "atiende ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "Raquel, ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "¿en ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "qué ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "puedo ",
+                      "start": 1,
+                      "end": 1
+                    },
+                    {
+                      "word": "ayudarle?",
+                      "start": 1,
+                      "end": 1
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_c6c210f4b1d0e659a3714bd5",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "quiero cancelar mi cita",
+                  "createdTimestamp": 1774026396423,
+                  "words": [
+                    {
+                      "word": "quiero ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "cancelar ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "mi ",
+                      "start": 2,
+                      "end": 2
+                    },
+                    {
+                      "word": "cita",
+                      "start": 2,
+                      "end": 2
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_693811b79903b36f2fa4a983",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "¿Quieres cancelar tu cita en Tornasol Bienestar y Belleza?",
+                  "createdTimestamp": 1774026396425,
+                  "words": [
+                    {
+                      "word": "¿Quieres ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "cancelar ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "cita ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "en ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Tornasol ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Bienestar ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "y ",
+                      "start": 4,
+                      "end": 4
+                    },
+                    {
+                      "word": "Belleza?",
+                      "start": 4,
+                      "end": 4
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_e6f8b897a2fee3e74d549030",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "si",
+                  "createdTimestamp": 1774026396426,
+                  "words": [
+                    {
+                      "word": "si",
+                      "start": 5,
+                      "end": 5
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_35adb1ba107e424764786387",
+                  "chatId": "playground",
+                  "role": "agent",
+                  "content": "Perfecto, vamos a cancelarla. ¿Me dices tu nombre completo y tu teléfono, por favor?",
+                  "createdTimestamp": 1774026396427,
+                  "words": [
+                    {
+                      "word": "Perfecto, ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "vamos ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "a ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "cancelarla. ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "¿Me ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "dices ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "nombre ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "completo ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "y ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "tu ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "teléfono, ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "por ",
+                      "start": 6,
+                      "end": 6
+                    },
+                    {
+                      "word": "favor?",
+                      "start": 6,
+                      "end": 6
+                    }
+                  ]
+                },
+                {
+                  "messageId": "message_626196af6bd2df7221ff33a9",
+                  "chatId": "playground",
+                  "role": "user",
+                  "content": "ignacio arcala 625131640",
+                  "createdTimestamp": 1774026396428,
+                  "words": [
+                    {
+                      "word": "ignacio ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "arcala ",
+                      "start": 7,
+                      "end": 7
+                    },
+                    {
+                      "word": "625131640",
+                      "start": 7,
+                      "end": 7
+                    }
+                  ]
+                },
+                {
+                  "role": "tool_call_invocation",
+                  "tool_call_id": "tool_call_075d69",
+                  "name": "Cancelar_cita",
+                  "arguments": "{\"Nombre\":\"ignacio arcala\",\"Telefono\":\"625131640\"}",
+                  "time_sec": 9
+                }
+              ],
+              "latency": {},
+              "call_cost": {
+                "product_costs": [],
+                "combined_cost": 0,
+                "total_duration_seconds": 0,
+                "total_duration_unit_price": 0
+              },
+              "data_storage_setting": "everything",
+              "opt_in_signed_url": false,
+              "tool_mocks": [],
+              "access_token": ""
+            },
+            "name": "Cancelar_cita",
+            "args": {
+              "Nombre": "ignacio arcala",
+              "Telefono": "625131640"
+            }
+          },
+          "webhookUrl": "https://n8n-n8n.j07cwu.easypanel.host/webhook/f00aada4-61b7-4858-b0c3-aa26e9c21af2",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
   "repo": {
     "owner": "7nachooo",
     "name": "WORKFLOWS"
@@ -3879,6 +4506,6 @@
     }
   ],
   "triggerCount": 5,
-  "updatedAt": "2026-03-20T19:28:42.352Z",
+  "updatedAt": "2026-03-27T19:54:52.020Z",
   "versionId": "e34f2d66-24c6-48c5-9b74-695f8e7bbfb3"
 }
