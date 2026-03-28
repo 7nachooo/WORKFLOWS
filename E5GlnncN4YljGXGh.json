@@ -132,7 +132,7 @@
             "cachedResultName": "tornasolcontacto3@gmail.com"
           },
           "returnAll": true,
-          "timeMax": "=",
+          "timeMax": "={{ $now.plus({ hours: 48 }).toISO() }}",
           "options": {}
         },
         "type": "n8n-nodes-base.googleCalendar",
@@ -594,7 +594,7 @@
           "cachedResultName": "tornasolcontacto3@gmail.com"
         },
         "returnAll": true,
-        "timeMax": "=",
+        "timeMax": "={{ $now.plus({ hours: 48 }).toISO() }}",
         "options": {}
       },
       "type": "n8n-nodes-base.googleCalendar",
