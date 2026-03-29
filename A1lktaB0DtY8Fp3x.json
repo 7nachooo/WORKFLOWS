@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2026-03-23T15:53:50.000Z",
-    "createdAt": "2026-03-23T15:53:49.232Z",
-    "versionId": "8b18fb37-8fb6-4070-8291-51ffa3cd50e4",
+    "updatedAt": "2026-03-28T17:20:47.000Z",
+    "createdAt": "2026-03-28T17:18:37.914Z",
+    "versionId": "d58a142d-e928-4d06-8e4c-c64122d5940b",
     "workflowId": "A1lktaB0DtY8Fp3x",
     "nodes": [
       {
@@ -49,8 +49,8 @@
         "type": "n8n-nodes-base.googleCalendarTool",
         "typeVersion": 1.2,
         "position": [
-          2008,
-          300
+          2016,
+          304
         ],
         "credentials": {
           "googleCalendarOAuth2Api": {
@@ -150,7 +150,7 @@
           "messages": {
             "values": [
               {
-                "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = 2026-03-19T10:00:00+01:00 (inicio del día)\n  hasta: 2026-03-19T21:00:00+01:00 (fin del día)\n\nDevuelve únicamente el JSON con estado y bloques."
+                "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = {{ $('Code').first().json.end }}\n\nDevuelve únicamente el JSON con estado y bloques."
               },
               {
                 "content": "=Eres un asistente que calcula disponibilidad de agenda.\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. DEBES usar obligatoriamente la herramienta Google Calendar antes de responder.\n2. Llama a la tool con start_time = fecha solicitada a las 10:00:00 y end_time = fecha solicitada a las 21:00:00 para obtener TODOS los eventos del día completo, no solo el hueco concreto.\n   - Lunes a Viernes → start: FECHAt10:00:00+01:00 / end: FECHAt21:00:00+01:00\n   - Sábado          → start: FECHAt12:00:00+01:00 / end: FECHAt20:00:00+01:00\n   - Domingo         → start: FECHAt12:00:00+01:00 / end: FECHAt19:00:00+01:00\n3. Una vez obtenidos todos los eventos del día, comprueba solapamiento con el hueco solicitado usando:\n   inicio_solicitado < fin_evento AND fin_solicitado > inicio_evento\n4. Comprueba que el hueco solicitado esté completamente dentro del horario del centro.\n   El servicio debe terminar ANTES o EN el cierre. Si se sale → estado OCUPADO.\n\nREGLAS CRÍTICAS PARA LOS BLOQUES:\n- Lista CADA evento como un bloque independiente en el JSON.\n- NUNCA fusiones eventos consecutivos. 13:00-14:00 y 14:00-15:00 son DOS bloques separados.\n- NUNCA omitas eventos. Si el calendario devuelve 7 eventos → 7 bloques en el array.\n- Copia las horas exactas sin redondear ni modificar.\n- Si response del calendario es [] → no hay eventos → el hueco puede estar libre.\n\nLÓGICA DE DECISIÓN:\n- Si el hueco solicitado NO solapa con ningún bloque Y está dentro del horario → {\"estado\":\"LIBRE\",\"bloques\":[]}\n- Si el hueco solicitado solapa con algún bloque → {\"estado\":\"OCUPADO\",\"bloques\":[...todos los eventos del día...]}\n- Si el hueco solicitado está fuera del horario del centro → {\"estado\":\"OCUPADO\",\"bloques\":[]}\n\nSALIDA:\nResponde ÚNICAMENTE con este JSON, sin texto adicional, sin explicación, sin markdown:\nSi libre:   {\"estado\":\"LIBRE\",\"bloques\":[]}\nSi ocupado: {\"estado\":\"OCUPADO\",\"bloques\":[{\"start\":\"HH:MM\",\"end\":\"HH:MM\"}]}",
@@ -192,7 +192,7 @@
         "typeVersion": 1.5,
         "position": [
           1488,
-          508
+          512
         ],
         "id": "77f5066e-d02e-4bc5-8308-01ac3cfdf90c",
         "name": "Basic LLM Chain"
@@ -209,8 +209,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
         "typeVersion": 1.2,
         "position": [
-          1560,
-          732
+          1568,
+          736
         ],
         "id": "a027a564-e5d9-4aeb-acca-374fbb7a2cf4",
         "name": "OpenAI Chat Model",
@@ -345,11 +345,11 @@
       }
     },
     "authors": "Ignacio arcala",
-    "name": "Version 8b18fb37",
+    "name": "Version d58a142d",
     "description": "",
-    "autosaved": false
+    "autosaved": true
   },
-  "activeVersionId": "8b18fb37-8fb6-4070-8291-51ffa3cd50e4",
+  "activeVersionId": "d58a142d-e928-4d06-8e4c-c64122d5940b",
   "connections": {
     "Google Calendar1": {
       "ai_tool": [
@@ -586,7 +586,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = 2026-03-19T10:00:00+01:00 (inicio del día)\n  hasta: 2026-03-19T21:00:00+01:00 (fin del día)\n\nDevuelve únicamente el JSON con estado y bloques."
+              "content": "=Consulta el Google Calendar y calcula disponibilidad.\n\n- Fecha: {{ $('Code').first().json.fecha }}\n- Inicio solicitado: {{ $('Code').first().json.hora }}\n- Fin solicitado: {{ $('Code').first().json.hora_fin }}\n- Duración: {{ $('Code').first().json.duracion }} minutos\n- Start ISO: {{ $('Code').first().json.start }}\n- End ISO: {{ $('Code').first().json.end }}\n\nLlama a la tool Google Calendar con:\n  start_time = {{ $('Code').first().json.start }}\n  end_time = {{ $('Code').first().json.end }}\n\nDevuelve únicamente el JSON con estado y bloques."
             },
             {
               "content": "=Eres un asistente que calcula disponibilidad de agenda.\n\nHORARIO DEL CENTRO:\n- Lunes a Viernes: 10:00 – 21:00\n- Sábado: 12:00 – 20:00\n- Domingo: 12:00 – 19:00\n\nINSTRUCCIONES:\n1. DEBES usar obligatoriamente la herramienta Google Calendar antes de responder.\n2. Llama a la tool con start_time = fecha solicitada a las 10:00:00 y end_time = fecha solicitada a las 21:00:00 para obtener TODOS los eventos del día completo, no solo el hueco concreto.\n   - Lunes a Viernes → start: FECHAt10:00:00+01:00 / end: FECHAt21:00:00+01:00\n   - Sábado          → start: FECHAt12:00:00+01:00 / end: FECHAt20:00:00+01:00\n   - Domingo         → start: FECHAt12:00:00+01:00 / end: FECHAt19:00:00+01:00\n3. Una vez obtenidos todos los eventos del día, comprueba solapamiento con el hueco solicitado usando:\n   inicio_solicitado < fin_evento AND fin_solicitado > inicio_evento\n4. Comprueba que el hueco solicitado esté completamente dentro del horario del centro.\n   El servicio debe terminar ANTES o EN el cierre. Si se sale → estado OCUPADO.\n\nREGLAS CRÍTICAS PARA LOS BLOQUES:\n- Lista CADA evento como un bloque independiente en el JSON.\n- NUNCA fusiones eventos consecutivos. 13:00-14:00 y 14:00-15:00 son DOS bloques separados.\n- NUNCA omitas eventos. Si el calendario devuelve 7 eventos → 7 bloques en el array.\n- Copia las horas exactas sin redondear ni modificar.\n- Si response del calendario es [] → no hay eventos → el hueco puede estar libre.\n\nLÓGICA DE DECISIÓN:\n- Si el hueco solicitado NO solapa con ningún bloque Y está dentro del horario → {\"estado\":\"LIBRE\",\"bloques\":[]}\n- Si el hueco solicitado solapa con algún bloque → {\"estado\":\"OCUPADO\",\"bloques\":[...todos los eventos del día...]}\n- Si el hueco solicitado está fuera del horario del centro → {\"estado\":\"OCUPADO\",\"bloques\":[]}\n\nSALIDA:\nResponde ÚNICAMENTE con este JSON, sin texto adicional, sin explicación, sin markdown:\nSi libre:   {\"estado\":\"LIBRE\",\"bloques\":[]}\nSi ocupado: {\"estado\":\"OCUPADO\",\"bloques\":[{\"start\":\"HH:MM\",\"end\":\"HH:MM\"}]}",
@@ -701,9 +701,9 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "Fecha": "2026-03-27",
-          "Hora": "18:00",
-          "Duracion": "60"
+          "Fecha": "2026-03-24",
+          "Hora": "15:00",
+          "Duracion": "105"
         },
         "pairedItem": {
           "item": 0
@@ -742,6 +742,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2026-03-28T17:16:18.723Z",
-  "versionId": "c3a3388c-c5e1-4c82-ad33-b56594e8c33f"
+  "updatedAt": "2026-03-28T17:18:37.913Z",
+  "versionId": "d58a142d-e928-4d06-8e4c-c64122d5940b"
 }
